@@ -1,5 +1,5 @@
 ###################################################################################################################
-#########  STANDARDISATION DES DONNEES    ###############################################################
+###################  STANDARDISATION DES DONNEES    ###############################################################
 ###################################################################################################################
 
 #Changer le directory selon votre ordinateur
@@ -12,9 +12,9 @@ library('stringr')
 #install.packages("dplyr")
 library('dplyr')
 
-################################################################################################################
-#######   1. COURS      #########################################################################################
-################################################################################################################
+###################################################################################################
+#######   1. COURS      ###########################################################################
+###################################################################################################
 ###################################################################################################
 ###################   1.1 IMPORTATION   ###########################################################
 ###################################################################################################
@@ -34,7 +34,7 @@ Data.list.cours[[7]] = read.csv("cours_Thiffault.csv", sep=';')
 # head(Data.list.cours[[1]])
 
 ###################################################################################################
-####################   1.2 Uniformisation des noms des colonnes   #####################################################
+####################   1.2 Uniformisation des noms des colonnes   #################################
 ###################################################################################################
 
 # Rapport: apr?s observation des donn?es je vois que tous les fichiers contiennent:
@@ -62,7 +62,7 @@ for (i in 1:length(Data.list.cours)){
 Data.list.cours <- lapply(Data.list.cours, na.omit)
 
 #######################################################################################################
-#####################   1.3 Uniformisation du type OBLIGATOIRE   #############################################################
+#####################   1.3 Uniformisation du type OBLIGATOIRE   ######################################
 #######################################################################################################
 
 for (i in 1:7){
@@ -80,7 +80,7 @@ for (i in 1:7){
 
 
 #######################################################################################################
-#####################   1.4 Unifromisation du type TRAVAIL    ###################################################################
+#####################   1.4 Unifromisation du type TRAVAIL    #########################################
 #######################################################################################################
 
 for (i in 1:7){
@@ -104,15 +104,16 @@ for (i in 1:7){
 #######################################################################################################
 #####################   1.5 Mise en commun   ##########################################################
 #######################################################################################################
+
 Data_cours <- distinct(bind_rows(Data.list.cours))
 
 ###################################################################################################
 ######################### 1.6 Nettoyage ###########################################################
-#####################################################################################################
+###################################################################################################
 
 #attach(Data_cours)
 #newData <- Data_cours[order(sigle),]
-#edit(newData) #pour observer les donnees?
+#edit(newData) #pour observer les donnees
 #detach(Data_cours)
 
 #Enlever les erreurs de cours et/ou les doublons
@@ -134,7 +135,7 @@ for (i in 1:34){
 }
 
 # ce sont les lignes des cours que nous avons choisi d'enlever 
-#éetrangement, l'index est inferieur a ce qu'il devrait attention! 
+#étrangement, l'index est inferieur a ce qu'il devrait attention! 
 #Pour enlever la ligne 39, il faut indiquer 38.
 Data_cours = Data_cours[-c(38,33,35,11,39,40,45,27,26,34,28),]
 
@@ -142,9 +143,9 @@ Data_cours = Data_cours[-c(38,33,35,11,39,40,45,27,26,34,28),]
 ################################################################################################################
 #########   2. COLLABORATION   #################################################################################
 ################################################################################################################
-###################################################################################################
-###################   2.1 IMPORTATION   ###########################################################
-###################################################################################################
+################################################################################################################
+###################   2.1 IMPORTATION   ########################################################################
+################################################################################################################
 
 
 Data.list.collabo <-list() # creer une liste vide
@@ -161,7 +162,7 @@ Data.list.collabo[[7]] <- read.csv("collaborations_Thiffault.csv" , sep=';',file
 # head(Data.list.collabo[[1]])
 
 ######################################################################################################
-####################   2.2 Uniformisation des nom des colonnes   ########################################################
+####################   2.2 Uniformisation des nom des colonnes   #####################################
 ######################################################################################################
 
 # 4 colonnes sont necessaires dans ce DB: cours, etudiant1, etudiant2 et date
@@ -174,9 +175,9 @@ for (i in 1:length(Data.list.collabo)){
   
   etudiant <- colnames(Data.list.collabo[[i]])[which(str_detect(colnames(Data.list.collabo[[i]]),'udiant')==TRUE)]
   
-  # Certaine manip furent necessaire car il y avait des coquilles dansle d?but des colonne 'etudiant' 
-  # Ici on v?rifi si la colonne ?tudiant1 se trouve en premier dans les colonne vis ? vis d'?tudiant2
-  if(str_sub(etudiant[1],-9) < str_sub(etudiant[2],-9)){ # Parfois les noms de colonnes commen?aient par de dr?les de symboles
+  # Certaine manip furent necessaire car il y avait des coquilles dans le début des colonne 'etudiant' 
+  # Ici on vérifie si la colonne etudiant1 se trouve en premier dans les colonne vis à vis d'etudiant2
+  if(str_sub(etudiant[1],-9) < str_sub(etudiant[2],-9)){ # Parfois les noms de colonnes commençaient par de drôle de symboles
     colnames(Data.list.collabo[[i]])[which(str_detect(colnames(Data.list.collabo[[i]]),'udiant')==TRUE)] <- c('etudiant1','etudiant2')
   }else{
     colnames(Data.list.collabo[[i]])[which(str_detect(colnames(Data.list.collabo[[i]]),'udiant')==TRUE)] <- c('etudiant2','etudiant1')
@@ -189,11 +190,12 @@ for (i in 1:length(Data.list.collabo)){
 #######################################################################################################
 #####################   2.3 Mise en commun   ##########################################################
 #######################################################################################################
+
 Data_collabo = distinct(bind_rows(Data.list.collabo))
 
 
 ######################################################################################################
-####################   2.4 CORRECTIONS DES ERREURS DANS LES SIGLES   ######################################################
+####################   2.4 CORRECTIONS DES ERREURS DANS LES SIGLES   #################################
 ######################################################################################################
 
 # À faire jusqu'à ce que plus rien ne soit afficher
@@ -216,20 +218,20 @@ ECL315 = which(str_detect(Data_collabo[,3], 'ECL315'))
 Data_collabo = Data_collabo[-ECL315,]
 Data_collabo = Data_collabo[1:2393,]
 
-## On choisi d'enlever BOT512 et ZOO106 parce que selon nos connaissances, ces cours ne contenaient pas de travaux d'equipe
+## On choisi d'enlever BOT512 et ZOO106 parce que selon nos connaissances, ces cours ne contenaient pas de travaux d'equipe ou c'était facultatif d'être en équipe
 Data_collabo = subset(Data_collabo, cours !='BOT512')# A changer pour le nom du data.frame de ce fichier relier aux collabos
 Data_collabo = subset(Data_collabo, cours !='ZOO106')
 
 
 ######################################################################################################
-####################   2.5 CORRECTIONS DES ERREURS DANS LES ETUDIANTS    ##################################################
+####################   2.5 CORRECTIONS DES ERREURS DANS LES ETUDIANTS    #############################
 ######################################################################################################
 
 # observation des erreurs liées au nom
 #sort(unique(Data_collabo[,1]))
 
 # à vérifier : Noura barro, ariane beaulac, beaupre_raphael, boisvertvignault_erika, alexandre carbonneau,
-# desrochers_simon, duschenes_valerie, faurelevesque_julien, gagnon_anthony,frappierlecompte_juliette,
+# desrochers_simon, duschenes_valerie, faurelevesque_julien, gagnon_anthony,frappierlecompte_juliette, mallette_marianne
 # gagnon_joannie, hinse_pierandre, lacroixcarigan_etienne, laporte_simon, lariviere_charlotte = tessierlariviere_chalrotte,
 #  M_leopold, nault_lauriane, rioux_jennyann, avoiecloutier_kellymaude, sthilaire_pascale, trottier_katiacatherine, villeneuve_clara 
 
@@ -277,16 +279,18 @@ Data_collabo[which(str_detect(Data_collabo[,1],'trottier')),1]='trottier_katiaca
 Data_collabo[which(str_detect(Data_collabo[,2],'trottier')),2]='trottier_katiacatherine'
 Data_collabo[which(str_detect(Data_collabo[,1],'villleneuve')),1]='villeneuve_clara'
 Data_collabo[which(str_detect(Data_collabo[,2],'villleneuve')),2]='villeneuve_clara'
+Data_collabo[which(str_detect(Data_collabo[,1],'malette_marianne')),1]='mallette_marianne'
+Data_collabo[which(str_detect(Data_collabo[,2],'malette_marianne')),2]='mallette_marianne'
 Data_collabo = distinct(Data_collabo) # des nouveaux doublons peuvent s'être ajouté
 
-#Enlever des lignes en surplus apr?s v?rification dans le SQLite
+#Enlever des lignes en surplus (lignes vides) après vérification dans le SQLite
 Data_collabo <- Data_collabo[-c(375,2109),]
 
 
 
-######################################################################################################################
+####################################################################################################################
 ####################   2.6 CORRECTIONS DES ERREURS DANS LES DATES  #################################################
-######################################################################################################################
+####################################################################################################################
 
 # tous les uniques de la cle primaire de la table collaboration
 # combinaison de trois variables
@@ -331,9 +335,9 @@ for (i in 1:length(index_erreur)){
 Data_collabo= distinct(Data_collabo)
 
 
-################################################################################################################
-######   3.ETUDIANT      #######################################################################################
-################################################################################################################
+###################################################################################################
+###############   3.ETUDIANT      #################################################################
+###################################################################################################
 ###################################################################################################
 ###################   3.1 IMPORTATION   ###########################################################
 ###################################################################################################
@@ -355,15 +359,15 @@ Data.list.etudiant[[7]] <- read.csv("etudiants_Thiffault.csv", sep=';',fileEncod
 #Data.list.etudiant[[1]]
 
 ###################################################################################################
-####################   3.2 Uniformisation des noms des colonnes   #####################################################
+####################   3.2 Uniformisation des noms des colonnes   #################################
 ###################################################################################################
 
 #Les colonnes sont 
-# nom_prenom
-# annee_debut
-# session_debut
-# programme
-# coop
+  # nom_prenom
+  # annee_debut
+  # session_debut
+  # programme
+  # coop
 #Sont tous bien remplies ou presque!
 
 for (i in 1:length(Data.list.etudiant)){
@@ -383,20 +387,21 @@ for (i in 1:length(Data.list.etudiant)){
 #######################################################################################################
 #####################   3.3 Mise en commun   ##########################################################
 #######################################################################################################
+
 Data_etudiant <- distinct(bind_rows(Data.list.etudiant))
 
 
-##################################################################################################
-######################### 3.4 Nettoyage ###########################################################
-##################################################################################################
+######################################################################################################
+############################ 3.4 Nettoyage ###########################################################
+######################################################################################################
 
-#V?rifier les noms dans la liste d'?tudiant en ordre alphabetique
+#Vérifier les noms dans la liste d'etudiant en ordre alphabetique
 #attach(Data_etudiant)
 #newData <- Data_etudiant[order(nom_prenom),]
 #edit(newData)
 #detach(Data_etudiant)
 
-#?liminer les rang?es ayant 2 fois le m?me nom et/ou des erreurs
+#Éliminer les rangées ayant 2 fois le même nom et/ou des erreurs
 #191,131,78,199,62,79,229,83,173,202,203,230,175,176,87,205
 #124,91,207,15,16,136,208,128,209,18,211,237,193*,94,167,212
 #68,165*,140*,213,214,159,31,216,185*,32,195,168,219,116,70
@@ -415,11 +420,11 @@ length(Data_etudiant$nom_prenom)
 
 
 
-############################################################################################################
+################################################################################################################
 ####################################### 4. Enregistrement ######################################################
-###############################################################################################################
+################################################################################################################
 
-#Change de r?pertoire pour y enregistrer les nouveaux tableaux
+#Change de répertoire pour y enregistrer les nouveaux tableaux
 #wd <- "C:/Users/Jo-Han'ny/Documents/Universit?/BIO500 - M?thode comput"
 #setwd(wd)
 
@@ -430,6 +435,6 @@ write.csv(Data_cours,file='Data_cours.csv',row.names=FALSE)
 
 
 
-################################## FIN ########################################################
+################################################## FIN ########################################################
 
 
