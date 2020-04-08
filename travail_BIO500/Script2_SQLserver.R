@@ -1,9 +1,9 @@
-##############################################################################################
+################################################################################################
 ############################### CONNEXION SQL ##################################################
-##############################################################################################
+################################################################################################
 
-#Changer de répertoire selon où sont les données
-#wd <- "C:/Users/Jo-Han'ny/Documents/Université/BIO500 - Méthode comput"
+#Changer de rÃ©pertoire selon oÃ¹ sont les donnÃ©es
+#wd <- "C:/Users/Jo-Han'ny/Documents/UniversitÃ©/BIO500 - MÃ©thode comput"
 #setwd(wd)
 
 #install.packages('RSQLite')
@@ -11,9 +11,9 @@ library(RSQLite)
 
 con<-dbConnect(SQLite(),dbname="bd_reseau")
 
-#############################################################################################
+################################################################################################
 ############################## CREATION DE LA BASE DE DONNEES ##################################
-#############################################################################################
+################################################################################################
 
 tbl_noms<-'
 CREATE TABLE noms (
@@ -39,7 +39,7 @@ FOREIGN KEY (etudiant2) REFERENCES noms(nom_prenom),
 FOREIGN KEY (cours) REFERENCES cours(sigle)
 );"
 
-#V?rifier si on peut faire une cl? entre cours (tbl_collaborations) et sigle (tbl_cours)
+#VÃ©rifier si on peut faire une clÃ© entre cours (tbl_collaborations) et sigle (tbl_cours)
 dbSendQuery(con, tbl_collaborations)
 
 #Nous avons retirer l'information pour la colonne travail car, il y avait trop de NA
@@ -57,6 +57,7 @@ FOREIGN KEY (sigle) REFERENCES collaborations(cours)
 dbSendQuery(con, tbl_cours)
 
 
-############################################################################
+
 dbDisconnect(con)
+
 ####################################### FIN ###########################################
