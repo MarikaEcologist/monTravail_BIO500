@@ -1,28 +1,35 @@
 ##################################################################################################
 ############################## INJECTION DONNEES DANS SQLITE #####################################
 ##################################################################################################
-setwd('/Users/tidelidam/Documents/WD')
+
+#Mettre votre work directory
+#setwd('/Users/tidelidam/Documents/WD')
+
 library('RSQLite')
-install.packages('knitr')
+#install.packages('knitr')
 library('knitr')
-#Connection au SQLite si ce n'est pas d?j? fait
+
+#Connection au SQLite si ce n'est pas déjà fait
 con<-dbConnect(SQLite(),dbname="bd_reseau")
 
-################ Injections des donn?es concernant les ?tudiants
+##################################### Injections des données concernant les etudiants
 bd_noms<-read.csv(file='data_etudiant.csv')
 dbWriteTable(con,append=TRUE, name='noms5', value=bd_noms,row.name=FALSE)
 
-################## Injection des donn?es concernant les cours
+##################################### Injection des données concernant les cours
 bd_cours<-read.csv(file='Data_cours.csv')
-#Enlever les cours BOT512 et ZOO106
+
+#Enlever les cours BOT512 et ZOO106 (puisqu'ils sont enlever dans les collaborations)
+#Et les cours ECL608 et ISN154 car aucune collaboration 
 which(bd_cours$sigle == 'BOT512')
 which(bd_cours$sigle == 'ZOO106')
 which(bd_cours$sigle == 'ECL608')
 which(bd_cours$sigle == 'ISN154')
 bd_cours <- bd_cours[c(1:21,23:24,26:29,32:nrow(bd_cours)),]
+
 dbWriteTable(con,append=TRUE,name='cours5',value=bd_cours,row.name=FALSE)
 
-############### Injection des donn?es concernant les collaborations
+#################################### Injection des donn?es concernant les collaborations
 bd_collaborations<-read.csv(file='Data_collabo.csv')
 dbWriteTable(con,append=TRUE,name='collaborations5',value=bd_collaborations,row.name=FALSE)
 
@@ -35,7 +42,7 @@ dbWriteTable(con,append=TRUE,name='collaborations5',value=bd_collaborations,row.
 
 sql_requete <- "
 SELECT etudiant1, etudiant2, count(*) AS nb_collaborations
-FROM collaborations5
+FROM collaborations
 GROUP BY etudiant1, etudiant2;"
 resume_collabo <- dbGetQuery(con, sql_requete)
 head(resume_collabo)
@@ -43,12 +50,12 @@ head(resume_collabo)
 
 
 ######################################################################################################
-################################ 1.2 NOMBRE ETUDIANTS PAR COURS PAR COURS  ########################
+########################### 1.2 NOMBRE ETUDIANTS PAR COURS POUR CHAQUE COURS  ########################
 ######################################################################################################
 
 sql_requete <- "
 SELECT cours, count(DISTINCT etudiant1) AS nb_etudiants 
-FROM collaborations5
+FROM collaborations
 GROUP BY cours;"
 resume_cours <- dbGetQuery(con, sql_requete)
 resume_cours <- resume_cours[2:31,]
@@ -59,229 +66,223 @@ resume_cours <- resume_cours[2:31,]
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%BCM113%'
+FROM collaborations WHERE cours LIKE '%BCM113%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_BCM113 <- dbGetQuery(con, sql_requete)
 head(Pop_BCM113)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%BIO109%'
+FROM collaborations WHERE cours LIKE '%BIO109%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_BIO109 <- dbGetQuery(con, sql_requete)
 head(Pop_BIO109)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%BIO500%'
+FROM collaborations WHERE cours LIKE '%BIO500%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_BIO500 <- dbGetQuery(con, sql_requete)
 head(Pop_BIO500)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%BOT400%'
+FROM collaborations WHERE cours LIKE '%BOT400%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_BOT400 <- dbGetQuery(con, sql_requete)
 head(Pop_BOT400)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL308%'
+FROM collaborations WHERE cours LIKE '%ECL308%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL308 <- dbGetQuery(con, sql_requete)
 head(Pop_ECL308)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL403%'
+FROM collaborations WHERE cours LIKE '%ECL403%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL403 <- dbGetQuery(con, sql_requete)
 head(Pop_ECL403)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL404%'
+FROM collaborations WHERE cours LIKE '%ECL404%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL404 <- dbGetQuery(con, sql_requete)
 head(Pop_ECL404)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL406%'
+FROM collaborations WHERE cours LIKE '%ECL406%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL406 <- dbGetQuery(con, sql_requete)
 head(Pop_ECL406)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL515%'
+FROM collaborations WHERE cours LIKE '%ECL515%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL515 <- dbGetQuery(con, sql_requete)
 head(Pop_ECL515)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL516%'
+FROM collaborations WHERE cours LIKE '%ECL516%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL516 <- dbGetQuery(con, sql_requete)
 head(Pop_ECL516)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL527%'
+FROM collaborations WHERE cours LIKE '%ECL527%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL527 <- dbGetQuery(con, sql_requete)
 head(Pop_ECL527)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL535%'
+FROM collaborations WHERE cours LIKE '%ECL535%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL535 <- dbGetQuery(con, sql_requete)
 head(Pop_ECL535)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL611%'
+FROM collaborations WHERE cours LIKE '%ECL611%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL611 <- dbGetQuery(con, sql_requete)
 head(Pop_ECL611)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ENT102%'
+FROM collaborations WHERE cours LIKE '%ENT102%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ENT102 <- dbGetQuery(con, sql_requete)
 head(Pop_ENT102)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%INS154%'
+FROM collaborations WHERE cours LIKE '%INS154%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_INS154 <- dbGetQuery(con, sql_requete)
 head(Pop_INS154)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%MCB101%'
+FROM collaborations WHERE cours LIKE '%MCB101%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_MCB101 <- dbGetQuery(con, sql_requete)
 head(Pop_MCB101)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%TSB303%'
+FROM collaborations WHERE cours LIKE '%TSB303%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_TSB303 <- dbGetQuery(con, sql_requete)    
 head(Pop_TSB303)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ZOO105%'
+FROM collaborations WHERE cours LIKE '%ZOO105%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ZOO105 <- dbGetQuery(con, sql_requete)    
 head(Pop_ZOO105)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ZOO306%'
+FROM collaborations WHERE cours LIKE '%ZOO306%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ZOO306 <- dbGetQuery(con, sql_requete)    
 head(Pop_ZOO306)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL616%'
+FROM collaborations WHERE cours LIKE '%ECL616%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL616 <- dbGetQuery(con, sql_requete)    
 head(Pop_ECL616)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL603%'
+FROM collaborations WHERE cours LIKE '%ECL603%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL603 <- dbGetQuery(con, sql_requete)    
 head(Pop_ECL603)
 
-#COURS ECL608 A RETIRER CAR AUCUNE COLLABORATION DANS CE COURS
-
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%GMQ106%'
+FROM collaborations WHERE cours LIKE '%GMQ106%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_GMQ106 <- dbGetQuery(con, sql_requete)    
 head(Pop_GMQ106)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL534%'
+FROM collaborations WHERE cours LIKE '%ECL534%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL534 <- dbGetQuery(con, sql_requete)    
 head(Pop_ECL534)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%GBI104%'
+FROM collaborations WHERE cours LIKE '%GBI104%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_GBI104 <- dbGetQuery(con, sql_requete)    
 head(Pop_GBI104)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%INS154%'
+FROM collaborations WHERE cours LIKE '%INS154%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_INS154 <- dbGetQuery(con, sql_requete)    
 head(Pop_INS154)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ZOO307%'
+FROM collaborations WHERE cours LIKE '%ZOO307%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ZOO307 <- dbGetQuery(con, sql_requete)    
 head(Pop_ZOO307)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%BCM104%'
+FROM collaborations WHERE cours LIKE '%BCM104%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_BCM104 <- dbGetQuery(con, sql_requete)    
 head(Pop_BCM104)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL522%'
+FROM collaborations WHERE cours LIKE '%ECL522%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL522 <- dbGetQuery(con, sql_requete)    
 head(Pop_ECL522)
 
-#ENLEVER DATA_COLLABO, MAIS PAS DU DATA_COURS
-
-#ENLEVER DU DATA_COLLABO MAIS PAS DU DATA_COURS
-
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL510%'
+FROM collaborations WHERE cours LIKE '%ECL510%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL510 <- dbGetQuery(con, sql_requete)    
 head(Pop_ECL510)
 
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%CHM319%'
+FROM collaborations WHERE cours LIKE '%CHM319%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_CHM319 <- dbGetQuery(con, sql_requete)    
 head(Pop_CHM319)
             
 sql_requete <- "
 SELECT etudiant1, etudiant2
-FROM collaborations5 WHERE cours LIKE '%ECL301%'
+FROM collaborations WHERE cours LIKE '%ECL301%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL301 <- dbGetQuery(con, sql_requete)    
 head(Pop_ECL301)
             
 ############################################################################################################
-########################## 2. VISUALISATION DES R?SEAUX ####################################################
+########################## 2. VISUALISATION DES RéSEAUX ####################################################
 ############## 2.1 CREATION MATRICE RESEAU COLLABORATION ###################################################
 ############################################################################################################
 
@@ -292,14 +293,14 @@ library(reshape2)
 #install.packages("igraph")
 library(igraph)
 
-# Matrice carre
+#Équilibre la matrice carrée
 resume_collabo2 <- subset(resume_collabo, etudiant2%in%etudiant1)
 resume_collabo3 <- subset(resume_collabo2, etudiant1%in%etudiant2)
 L <- acast(resume_collabo3, etudiant1~etudiant2, value.var='nb_collaborations')
 
-#Verification que la matrice est bien carre
-#ncol(Banane)
-#nrow(Banane)
+#Verification que la matrice est bien carrée
+#ncol(L)
+#nrow(L)
 
 #####################################################################################################
 ############################################## 2.2 VISUALISATION IGRAPH #############################
@@ -318,7 +319,7 @@ plot(Colab, vertex.size = 10*degree(Colab)/max(degree(Colab))+3,
      vertex.label= NA, vertex.label.cex = 7, 
      vertex.shape="circle", edge.arrow.size= 0, 
      edge.width= 1, edge.color="grey",
-     layout=layout_nicely, main='R?seau ?tudiants')
+     layout=layout_nicely, main='Réseau Étudiants')
 
 
 
@@ -334,8 +335,6 @@ etudiantstotaux <- unique(c(as.character(Pop_BCM113$etudiant1),as.character(Pop_
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
         nom1 <- colnames(matrix_collabo)[i]
@@ -582,8 +581,6 @@ etudiantstotaux <- unique(c(as.character(Pop_ECL515$etudiant1),as.character(Pop_
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -614,8 +611,6 @@ etudiantstotaux <- unique(c(as.character(Pop_ECL516$etudiant1),as.character(Pop_
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -646,8 +641,6 @@ etudiantstotaux <- unique(c(as.character(Pop_ECL527$etudiant1),as.character(Pop_
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -670,6 +663,7 @@ plot(ECL527, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='ECL527')
 
+            
 ################################################################################################################
 ####################### 2.3.12 POPULATION ECL535 ###############################################################
 ################################################################################################################
@@ -678,8 +672,6 @@ etudiantstotaux <- unique(c(as.character(Pop_ECL535$etudiant1),as.character(Pop_
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -702,6 +694,7 @@ plot(ECL535, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='ECL535')
      
+
 ################################################################################################################
 ####################### 2.3.13 POPULATION ECL611 ###############################################################
 ################################################################################################################
@@ -710,8 +703,6 @@ etudiantstotaux <- unique(c(as.character(Pop_ECL611$etudiant1),as.character(Pop_
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -733,7 +724,8 @@ plot(ECL611, layout=layout_nicely, vertex.label.color = 'black',
      edge.arrow.mode = 0, vertex.frame.color = NA, 
      vertex.size = 7, edge.width = 0.2,
      main='ECL611')
-     
+
+            
 ################################################################################################################
 ####################### 2.3.14 POPULATION ENT102 ###############################################################
 ################################################################################################################
@@ -742,8 +734,6 @@ etudiantstotaux <- unique(c(as.character(Pop_ENT102$etudiant1),as.character(Pop_
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -765,7 +755,8 @@ plot(ENT102, layout=layout_nicely, vertex.label.color = 'black',
      edge.arrow.mode = 0, vertex.frame.color = NA, 
      vertex.size = 7, edge.width = 0.2,
      main='ENT102')
-     
+
+            
 ################################################################################################################
 ####################### 2.3.15 POPULATION INS154 ###############################################################
 ################################################################################################################
@@ -774,8 +765,6 @@ etudiantstotaux <- unique(c(as.character(Pop_INS154$etudiant1),as.character(Pop_
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -798,6 +787,7 @@ plot(INS154, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='INS154')
 
+            
 ################################################################################################################
 ####################### 2.3.16 POPULATION MCB101 ###############################################################
 ################################################################################################################
@@ -806,8 +796,6 @@ etudiantstotaux <- unique(c(as.character(Pop_MCB101$etudiant1),as.character(Pop_
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -830,6 +818,7 @@ plot(MCB101, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='MCB101')
 
+            
 ################################################################################################################
 ####################### 2.3.17 POPULATION TSB303 ###############################################################
 ################################################################################################################
@@ -838,8 +827,6 @@ etudiantstotaux <- unique(c(as.character(Pop_TSB303$etudiant1),as.character(Pop_
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -862,6 +849,7 @@ plot(TSB303, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='TSB303')
 
+            
 ################################################################################################################
 ####################### 2.3.18 POPULATION ZOO105 ###############################################################
 ################################################################################################################
@@ -870,8 +858,6 @@ etudiantstotaux <- unique(c(as.character(Pop_ZOO105$etudiant1),as.character(Pop_
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -894,6 +880,7 @@ plot(ZOO105, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='ZOO105')
 
+            
 ################################################################################################################
 ####################### 2.3.19 POPULATION ZOO306 ###############################################################
 ################################################################################################################
@@ -902,8 +889,6 @@ etudiantstotaux <- unique(c(as.character(Pop_ZOO306$etudiant1),as.character(Pop_
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -926,6 +911,7 @@ plot(ZOO306, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='ZOO306')
 
+            
 ################################################################################################################
 ####################### 2.3.20 POPULATION ECL616 ###############################################################
 ################################################################################################################
@@ -934,8 +920,6 @@ etudiantstotaux <- unique(c(as.character(Pop_ECL616$etudiant1),as.character(Pop_
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -958,6 +942,7 @@ plot(ECL616, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='ECL616')
 
+            
 ################################################################################################################
 ####################### 2.3.21 POPULATION ECL603 ###############################################################
 ################################################################################################################
@@ -966,8 +951,6 @@ etudiantstotaux <- unique(c(as.character(Pop_ECL603$etudiant1),as.character(Pop_
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -990,22 +973,15 @@ plot(ECL603, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='ECL603')
 
+            
 ################################################################################################################
-####################### 2.3.22 POPULATION ECL608 ###############################################################
-################################################################################################################
-
-#COURS ECL608 A RETIRER CAR AUCUNE COLLABORATION DANS CE COURS
-
-################################################################################################################
-####################### 2.3.23 POPULATION GMQ106 ###############################################################
+####################### 2.3.22 POPULATION GMQ106 ###############################################################
 ################################################################################################################
 
 etudiantstotaux <- unique(c(as.character(Pop_GMQ106$etudiant1),as.character(Pop_GMQ106$etudiant2)))
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -1028,16 +1004,15 @@ plot(GMQ106, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='GMQ106')    
 
+            
 ################################################################################################################
-####################### 2.3.24 POPULATION ECL534 ###############################################################
+####################### 2.3.23 POPULATION ECL534 ###############################################################
 ################################################################################################################
 
 etudiantstotaux <- unique(c(as.character(Pop_ECL534$etudiant1),as.character(Pop_ECL534$etudiant2)))
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -1060,16 +1035,15 @@ plot(ECL534, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='ECL534')        
      
+            
 ################################################################################################################
-####################### 2.3.25 POPULATION GBI104 ###############################################################
+####################### 2.3.24 POPULATION GBI104 ###############################################################
 ################################################################################################################
 
 etudiantstotaux <- unique(c(as.character(Pop_GBI104$etudiant1),as.character(Pop_GBI104$etudiant2)))
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -1092,16 +1066,15 @@ plot(GBI104, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='GBI104')
 
+            
 ################################################################################################################
-####################### 2.3.26 POPULATION INS154 ###############################################################
+####################### 2.3.25 POPULATION INS154 ###############################################################
 ################################################################################################################
 
 etudiantstotaux <- unique(c(as.character(Pop_INS154$etudiant1),as.character(Pop_INS154$etudiant2)))
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -1124,16 +1097,15 @@ plot(INS154, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='INS154')       
      
+            
 ################################################################################################################
-####################### 2.3.27 POPULATION ZOO307 ###############################################################
+####################### 2.3.26 POPULATION ZOO307 ###############################################################
 ################################################################################################################
 
 etudiantstotaux <- unique(c(as.character(Pop_ZOO307$etudiant1),as.character(Pop_ZOO307$etudiant2)))
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -1156,16 +1128,15 @@ plot(ZOO307, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='ZOO307')
 
+            
 ################################################################################################################
-####################### 2.3.28 POPULATION BCM104 ###############################################################
+####################### 2.3.27 POPULATION BCM104 ###############################################################
 ################################################################################################################
 
 etudiantstotaux <- unique(c(as.character(Pop_BCM104$etudiant1),as.character(Pop_BCM104$etudiant2)))
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -1188,16 +1159,15 @@ plot(BCM104, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='BCM104')
      
+            
 ################################################################################################################
-####################### 2.3.29 POPULATION ECL522 ###############################################################
+####################### 2.3.28 POPULATION ECL522 ###############################################################
 ################################################################################################################
 
 etudiantstotaux <- unique(c(as.character(Pop_ECL522$etudiant1),as.character(Pop_ECL522$etudiant2)))
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -1220,28 +1190,15 @@ plot(ECL522, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='ECL522')
      
+            
 ################################################################################################################
-####################### 2.3.30 POPULATION BOT512 ###############################################################
-################################################################################################################
-
-#RETIRER DU DATA_COLLABO
- 
-################################################################################################################
-####################### 2.3.31 POPULATION ZOO106 ###############################################################
-################################################################################################################
-
-#RETIRER DU DATA_COLLABO
-
-################################################################################################################
-####################### 2.3.32 POPULATION ECL510 ###############################################################
+####################### 2.3.29 POPULATION ECL510 ###############################################################
 ################################################################################################################
 
 etudiantstotaux <- unique(c(as.character(Pop_ECL510$etudiant1),as.character(Pop_ECL510$etudiant2)))
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -1264,16 +1221,15 @@ plot(ECL510, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='ECL510')    
 
+            
 ################################################################################################################
-####################### 2.3.33 POPULATION CHM319 ###############################################################
+####################### 2.3.30 POPULATION CHM319 ###############################################################
 ################################################################################################################
 
 etudiantstotaux <- unique(c(as.character(Pop_CHM319$etudiant1),as.character(Pop_CHM319$etudiant2)))
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -1296,16 +1252,15 @@ plot(CHM319, layout=layout_nicely, vertex.label.color = 'black',
      vertex.size = 7, edge.width = 0.2,
      main='CHM319')
      
+            
 ################################################################################################################
-####################### 2.3.34 POPULATION ECL301 ###############################################################
+####################### 2.3.31 POPULATION ECL301 ###############################################################
 ################################################################################################################
 
 etudiantstotaux <- unique(c(as.character(Pop_ECL301$etudiant1),as.character(Pop_ECL301$etudiant2)))
 matrix_collabo <- matrix(data =rep(NA, times=1764), nrow=length(etudiantstotaux),ncol=length(etudiantstotaux))
 colnames(matrix_collabo) <- etudiantstotaux
 rownames(matrix_collabo) <- etudiantstotaux
-i=1
-j=1
 
 for (i in 1:ncol(matrix_collabo)){
   nom1 <- colnames(matrix_collabo)[i]
@@ -1331,15 +1286,14 @@ plot(ECL301, layout=layout_nicely, vertex.label.color = 'black',
 
 
 ################################################################################################################
-####################### 3. CALCUL DES VALEURS SUIVANT POISOT                  ##################################
+####################### 3. CALCUL DES VALEURS SUIVANT POISOT ###################################################
 ################################################################################################################
 
 ### Variables: M = realisation membership, B() = dissimilarite de ...,
 ## a = nb d'interactions qui sont dans A et dans B.
 ## b = nb d'interactions qui sont dans B, mais pas dans A.
 ## c = nb d'interactions qui sont dans A, mais pas dans B.
-
-      ##  B(M) = [(a+b+c)/((2a+b+c)/2)]-1
+##  B(M) = [(a+b+c)/((2a+b+c)/2)]-1
 
 library('dplyr')
 library('stringr')
@@ -1365,7 +1319,13 @@ for (i in 1:30){
   }
 }
 Matrice.Whittaker <- output
-install.packages('seriation')
+
+            
+################################################################################################################
+################################ 3.1 VISUALISATION #############################################################
+################################################################################################################
+            
+#install.packages('seriation')
 library(seriation)
 dissplot(Matrice.Whittaker, options = list(axes='both'))
 
@@ -1383,6 +1343,16 @@ abline(lm(D.mean$D~D.mean$nb_etudiants),col='red')
 #hist(D.mean$D) # pas vraiment distribuée normalement
 summary(lm(D.mean$D~D.mean$nb_etudiants))
 
+            
+            
+            
+            
+ 
+            
+
+
+
+#############################################################################################################################        
 #test du début avec ces 2 cours précis
   #A <- Pop_BIO500
   #B <- Pop_BCM113
