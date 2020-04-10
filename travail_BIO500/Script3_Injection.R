@@ -1293,7 +1293,7 @@ library('stringr')
 enviro <- ls()
 enviro.list <- mget(ls())
 Pop.cours <- enviro.list[which(str_detect(names(enviro.list),'Pop_')==TRUE)]
-Sigles <- unique(bd_cours[,1])
+Sigles <- sort(unique(bd_cours[,1]))
 
 
 output <- matrix(nrow=length(Sigles), ncol=length(Sigles),dimnames=list(Sigles, Sigles))
@@ -1321,18 +1321,20 @@ library(seriation)
 dissplot(Matrice.Whittaker, options = list(axes='both'))
 
 
-D.mean <- data.frame(D=rep(NA,30),cours=Sigles,nb_etudiants = resume_cours$nb_etudiants)
+Diss.mean <- data.frame(Diss=rep(NA,30),cours=Sigles,nb_etudiants = resume_cours$nb_etudiants)
 for (i in 1:30){
-  D.mean[i,1] <- mean(Matrice.Whittaker[i,])
+  Diss.mean[i,1] <- mean(Matrice.Whittaker[i,])
 }
 
-plot(D.mean$D~D.mean$nb_etudiants, main='Valeur de dissimilaritée de Whittaker',
+plot(Diss.mean$Diss~Diss.mean$nb_etudiants, main='Valeur de dissimilaritée de Whittaker',
      xlab='Nombre d étudiants dans le cours', 
-     ylab= 'Dissimilaritée moyenne par rapport aux autres cours',
-     )
-abline(lm(D.mean$D~D.mean$nb_etudiants),col='red')
+     ylab= 'Dissimilaritée moyenne par rapport aux autres cours')
+abline(lm(Diss.mean$Diss~Diss.mean$nb_etudiants),col='red')
+with(Diss.mean, text(Diss~nb_etudiants, labels = cours, cex=0.5,pos = 2))
+dev.off()
+
 #hist(D.mean$D) # pas vraiment distribuée normalement
-summary(lm(D.mean$D~D.mean$nb_etudiants))
+summary(lm(Diss.mean$Diss~Diss.mean$nb_etudiants))
 
             
             
