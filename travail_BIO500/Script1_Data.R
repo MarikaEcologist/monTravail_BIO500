@@ -116,9 +116,9 @@ Data_cours <- distinct(bind_rows(Data.list.cours))
 #edit(newData) #pour observer les donnees
 #detach(Data_cours)
 
-#Enlever les erreurs de cours et/ou les doublons
-#9, 47,48,49
-
+#Enlever les erreurs de cours et/ou les doublons (9, 47,48,49)
+#Apres verification dans SQLite, enlever les cours BOT512 et ZOO106 (puisqu'ils sont enlever dans les collaborations)
+#Et les cours ECL608 et ISN154 car aucune collaboration
 Data_cours <- Data_cours[-c(9, 38, 42, 24, 31, 28, 47:49),]
 
 # les noeuds devant être uniques, il ne doit y avoir qu'un seul travail par cours
