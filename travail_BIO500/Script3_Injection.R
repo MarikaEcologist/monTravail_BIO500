@@ -18,15 +18,6 @@ dbWriteTable(con,append=TRUE, name='noms5', value=bd_noms,row.name=FALSE)
 
 ##################################### Injection des données concernant les cours
 bd_cours<-read.csv(file='Data_cours.csv')
-
-#Enlever les cours BOT512 et ZOO106 (puisqu'ils sont enlever dans les collaborations)
-#Et les cours ECL608 et ISN154 car aucune collaboration 
-which(bd_cours$sigle == 'BOT512')
-which(bd_cours$sigle == 'ZOO106')
-which(bd_cours$sigle == 'ECL608')
-which(bd_cours$sigle == 'ISN154')
-bd_cours <- bd_cours[c(1:21,23:24,26:29,32:nrow(bd_cours)),]
-
 dbWriteTable(con,append=TRUE,name='cours5',value=bd_cours,row.name=FALSE)
 
 #################################### Injection des donn?es concernant les collaborations
