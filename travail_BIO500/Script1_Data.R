@@ -119,14 +119,14 @@ Data_cours <- distinct(bind_rows(Data.list.cours))
 #Enlever les erreurs de cours et/ou les doublons
 #9, 47,48,49
 
-Data_cours <- Data_cours[-c(9, 47:49),]
+Data_cours <- Data_cours[-c(9, 38, 42, 24, 31, 28, 47:49),]
 
 # les noeuds devant être uniques, il ne doit y avoir qu'un seul travail par cours
-Sigles = unique(Data_cours[,1]) #34 rows, 34 cours différent répertorié dans notre table cours
+Sigles = unique(Data_cours[,1]) #30 rows, 30 cours différent répertorié dans notre table cours
 
 
 # Faite cette operation jusqu'à ce qu'aucune lignes ne soit renvoyee
-for (i in 1:34){
+for (i in 1:30){
   output = subset(Data_cours,sigle==Sigles[i])
   if (nrow(output)>1){
     print(output)
@@ -137,7 +137,9 @@ for (i in 1:34){
 # ce sont les lignes des cours que nous avons choisi d'enlever 
 #étrangement, l'index est inferieur a ce qu'il devrait attention! 
 #Pour enlever la ligne 39, il faut indiquer 38.
-Data_cours = Data_cours[-c(38,33,35,11,39,40,45,27,26,34,28),]
+
+#Cest ici que sa bog!
+#Data_cours = Data_cours[-c(38,33,35,11,39,40,45,27,26,34,28),]
 
 
 ################################################################################################################
