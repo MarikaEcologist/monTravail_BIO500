@@ -118,14 +118,14 @@ Data_cours <- distinct(bind_rows(Data.list.cours))
 
 #Enlever les erreurs de cours et/ou les doublons (9, 47,48,49)
 #Apres verification dans SQLite, enlever les cours BOT512 et ZOO106 (puisqu'ils sont enlever dans les collaborations)
-#Et les cours ECL608 et ISN154 car aucune collaboration
-Data_cours <- Data_cours[-c(9, 38, 42, 24, 31, 28, 47:49),]
-
-# les noeuds devant être uniques, il ne doit y avoir qu'un seul travail par cours
-Sigles = unique(Data_cours[,1]) #30 rows, 30 cours différent répertorié dans notre table cours
+#Et les cours ECL608 et ISN154 car aucune collaboration 
+Data_cours <- Data_cours[-c(9,12,40,41,46,27,29,43,36,34,39,38, 42, 24, 31, 28, 47:49),]
 
 
-# Faite cette operation jusqu'à ce qu'aucune lignes ne soit renvoyee
+# les noeuds devant Ãªtre uniques, il ne doit y avoir qu'un seul travail par cours
+Sigles = unique(Data_cours[,1])
+
+# Faite cette operation jusqu'a ce qu'aucune lignes ne soit renvoyee
 for (i in 1:30){
   output = subset(Data_cours,sigle==Sigles[i])
   if (nrow(output)>1){
@@ -133,13 +133,7 @@ for (i in 1:30){
   }else{
   }
 }
-
-# ce sont les lignes des cours que nous avons choisi d'enlever 
-#étrangement, l'index est inferieur a ce qu'il devrait attention! 
-#Pour enlever la ligne 39, il faut indiquer 38.
-
-#Cest ici que sa bog!
-#Data_cours = Data_cours[-c(38,33,35,11,39,40,45,27,26,34,28),]
+#Constate qu'aucun cours est en double
 
 
 ################################################################################################################
