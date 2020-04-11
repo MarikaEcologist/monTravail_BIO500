@@ -14,15 +14,15 @@ con<-dbConnect(SQLite(),dbname="bd_reseau")
 
 ##################################### Injections des données concernant les etudiants
 bd_noms<-read.csv(file='data_etudiant.csv')
-dbWriteTable(con,append=TRUE, name='noms5', value=bd_noms,row.name=FALSE)
+dbWriteTable(con,append=TRUE, name='noms', value=bd_noms,row.name=FALSE)
 
 ##################################### Injection des données concernant les cours
 bd_cours<-read.csv(file='Data_cours.csv')
-dbWriteTable(con,append=TRUE,name='cours5',value=bd_cours,row.name=FALSE)
+dbWriteTable(con,append=TRUE,name='cours',value=bd_cours,row.name=FALSE)
 
 #################################### Injection des donn?es concernant les collaborations
 bd_collaborations<-read.csv(file='Data_collabo.csv')
-dbWriteTable(con,append=TRUE,name='collaborations5',value=bd_collaborations,row.name=FALSE)
+dbWriteTable(con,append=TRUE,name='collaborations',value=bd_collaborations,row.name=FALSE)
 
 
 
