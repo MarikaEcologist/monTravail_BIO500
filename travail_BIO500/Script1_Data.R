@@ -280,7 +280,7 @@ Data_collabo[which(str_detect(Data_collabo[,2],'malette_marianne')),2]='mallette
 Data_collabo = distinct(Data_collabo) # des nouveaux doublons peuvent s'être ajouté
 
 #Enlever des lignes en surplus (lignes vides) après vérification dans le SQLite
-Data_collabo <- Data_collabo[-c(375,2109),]
+Data_collabo <- Data_collabo[-c(375,2090),]
 
 
 
