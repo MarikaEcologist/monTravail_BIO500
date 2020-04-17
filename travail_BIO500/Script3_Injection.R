@@ -2,9 +2,7 @@
 ############################## INJECTION DONNEES DANS SQLITE #####################################
 ##################################################################################################
 
-#Mettre votre work directory
-#setwd('/Users/tidelidam/Documents/WD')
-
+setwd('/cloud/project/travail_BIO500')
 library('RSQLite')
 #install.packages('knitr')
 library('knitr')
@@ -1310,11 +1308,10 @@ library('dplyr')
 library('stringr')
 
 #Faire un vecteur contenant tous le nom des cours pour eviter de devoir les ecrire manuellement
-enviro <- ls()
-enviro.list <- mget(ls())
+enviro <- sort(ls())
+enviro.list <- mget(enviro)
 Pop.cours <- enviro.list[which(str_detect(names(enviro.list),'Pop_')==TRUE)]
-Sigles <- sort(unique(bd_cours[,1]))
-
+Sigles <- sort(as.character(unique(bd_cours[,1])))
 
 output <- matrix(nrow=length(Sigles), ncol=length(Sigles),dimnames=list(Sigles, Sigles))
 for (i in 1:30){
@@ -1331,15 +1328,24 @@ for (i in 1:30){
 }
 Matrice.Whittaker <- output
 
+install.packages("plot.matrix")
+library(plot.matrix)
+par(mar=c(5.1, 4.1, 5.1, 4.1))   # adapt margins
+plot(Matrice.Whittaker,
+     digits=2, text.cell=list(cex=0.5),
+     axis.col=list(side=1, cex.axis=0.7,las=2),
+     axis.row=list(side=2, cex.axis=0.7,las=2),
+     ylab="",xlab="", main="Matrice de la dissimilarité entre chaque cours")
             
 ################################################################################################################
 ################################ 3.1 VISUALISATION #############################################################
 ################################################################################################################
-            
+
+
 #install.packages('seriation')
 library(seriation)
-dissplot(Matrice.Whittaker, options = list(axes='both'))
-
+dissplot(Matrice.Whittaker, options = list(axes='both'), method='Spectral')
+axis(1)
 
 Diss.mean <- data.frame(Diss=rep(NA,30),cours=Sigles,nb_etudiants = resume_cours$nb_etudiants)
 for (i in 1:30){
