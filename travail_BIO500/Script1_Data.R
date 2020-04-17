@@ -1,18 +1,18 @@
-###################################################################################################################
-###################  STANDARDISATION DES DONNEES    ###############################################################
-###################################################################################################################
+#############################################################################################################
+#                                                                                                           #
+#   STANDARDISATION DES DONNEES                                                                             #     
+#                                                                                                           # 
+#   par Marika Caouette, Zachary Cloutier, Emma Couture, Joannie Gagnon, Marie Jacques Marianne Mallette    #  
+#                                                                                                           #  
+#############################################################################################################
 
-# YO Test number 2
-################
+setwd('/cloud/project/travail_BIO500/rawdata') #Ce repertoire est un rstudiocloud accessible (? à tester)
 
-# wd <- '/Users/tidelidam/Documents/WD/Raw Data' 
-# wd <- "C:/Users/Jo-Han'ny/Documents/Universit?/BIO500 - M?thode comput/donneesBIO500"
-setwd(wd) #Changer le working directory selon votre ordinateur
+# Vérifie si les packages requis sont installés, s'ils ne le sont pas, les installe et les charges dans la librarie.
+if (!require("stringr")) install.packages("stringr"); library("stringr") # utilisé pour repèrer des mots/noms dans la base de données
+if (!require("dplyr")) install.packages("dplyr"); library("dplyr")                    # pour la synthaxe
+if (!require("plot.matrix")) install.packages("plot.matrix"); library("plot.matrix")  # pour la figure de matrice de dissimilarité
 
-#install.packages ('stringr')
-library('stringr')
-#install.packages("dplyr")
-library('dplyr')
 
 ###################################################################################################
 #######   1. COURS      ###########################################################################
@@ -21,14 +21,15 @@ library('dplyr')
 ###################   1.1 IMPORTATION   ###########################################################
 ###################################################################################################
 
-Data.list.cours = list()
-Data.list.cours[[1]] = read.csv("cours_Ax_Et_Jo_Va.csv", sep=';')
+Data.list.cours = list() # Creation de l'objet (une liste vide) qui entreposera les donnees 
+                         # independament en attendant de les mettre en commun.
+{Data.list.cours[[1]] = read.csv("cours_Ax_Et_Jo_Va.csv", sep=';')
 Data.list.cours[[2]] = read.csv("cours_beteille.csv", sep=';')
 Data.list.cours[[3]] = read.csv("cours_gagnon.csv", sep=';')
 Data.list.cours[[4]] = read.csv("cours_GT_AD_RB_ETC_KC.csv", sep=';')
 Data.list.cours[[5]] = read.csv("cours_LP_TM_SPT_ELC_VM.csv")
 Data.list.cours[[6]] = read.csv("cours_payette.csv")
-Data.list.cours[[7]] = read.csv("cours_Thiffault.csv", sep=';')
+Data.list.cours[[7]] = read.csv("cours_Thiffault.csv", sep=';')}
 
 # nous pouvons regarder les donnees avec la fonction edit ou head
 # edit(Data.list.cours[[1]])
@@ -38,21 +39,23 @@ Data.list.cours[[7]] = read.csv("cours_Thiffault.csv", sep=';')
 ####################   1.2 Uniformisation des noms des colonnes   #################################
 ###################################################################################################
 
-# Rapport: apr?s observation des donn?es je vois que tous les fichiers contiennent:
+# Rapport: apres observation des donnees je vois que tous les fichiers contiennent:
 # Le Sigle
-# Le nb de cr?dit
+# Le nb de credit
 # Le type de travail
 # optionnel ou non
-# Mais seulement quelque un ont mis 'session', 'cours' et 'travail'
+# Mais seulement quelque uns ont mis 'session', 'cours' et 'travail'
 
 
 for (i in 1:length(Data.list.cours)){
   print(i) # simplement un compteur
-  colnames(Data.list.cours[[i]])[which(str_detect(colnames(Data.list.cours[[i]]),'sigle')==TRUE)] <- 'sigle'
+  str_trim(colnames(Data.list.cours[[i]])) # Retire les espaces avant et après les mots
+  colnames(Data.list.cours[[i]])%>%str_subset("sigle")
+  colnames(Data.list.cours[[i]])[which(str_detect(colnames(Data.list.cours[[i]]),'sigle')==TRUE)] <- 'sigle' #Pour retirer les espaces inutiles lors de la saisi de donnees
   
-  colnames(Data.list.cours[[i]])[which(str_detect(colnames(Data.list.cours[[i]]),'dit')==TRUE)] <- 'credit'
-  colnames(Data.list.cours[[i]])[which(str_detect(colnames(Data.list.cours[[i]]),'type')==TRUE)] <- 'type'
-  colnames(Data.list.cours[[i]])[which(str_detect(colnames(Data.list.cours[[i]]),'obl')==TRUE)] <- 'obligatoire'
+  colnames(Data.list.cours[[i]])[which(str_detect(colnames(Data.list.cours[[i]]),'dit')==TRUE)] <- 'credit' #Pour retirer l'accents
+  colnames(Data.list.cours[[i]])[which(str_detect(colnames(Data.list.cours[[i]]),'type')==TRUE)] <- 'type'  #voir ligne pour sigle
+  colnames(Data.list.cours[[i]])[which(str_detect(colnames(Data.list.cours[[i]]),'obl')==TRUE)] <- 'obligatoire'  #Pour les erreurs de frappe
   
   Data.list.cours[[i]] <- data.frame(sigle=Data.list.cours[[i]][,'sigle'],credits=Data.list.cours[[i]][,'credit'],
                                      type=Data.list.cours[[i]][,'type'],obligatoire=Data.list.cours[[i]][,'obligatoire'])
@@ -121,7 +124,7 @@ Data_cours <- distinct(bind_rows(Data.list.cours))
 #Apres verification dans SQLite, enlever les cours BOT512 et ZOO106 (puisqu'ils sont enlever dans les collaborations)
 #Et les cours ECL608 et ISN154 car aucune collaboration 
 Data_cours <- Data_cours[-c(9,12,40,41,46,27,29,43,36,34,39,38, 42, 24, 31, 28, 47:49),]
-
+rownames(Data_cours) <- c(1:30)
 
 # les noeuds devant Ãªtre uniques, il ne doit y avoir qu'un seul travail par cours
 Sigles = unique(Data_cours[,1])
@@ -211,13 +214,14 @@ Data_collabo[which(str_detect(Data_collabo[,3], 'ZOO106\n')),3] = 'ZOO106'
 Data_collabo[which(str_detect(Data_collabo[,3], 'ZOO307\n')),3] = 'ZOO307'
 Data_collabo[which(str_detect(Data_collabo[,3], 'ECL 527')),3] = 'ECL527'
 Data_collabo[which(str_detect(Data_collabo[,3], 'BOT 400')),3] = 'BOT400'
-ECL315 = which(str_detect(Data_collabo[,3], 'ECL315'))
-Data_collabo = Data_collabo[-ECL315,]
-Data_collabo = Data_collabo[1:2393,]
+
+Data_collabo = Data_collabo[1:2393,] # ? revoir la raison
 
 ## On choisi d'enlever BOT512 et ZOO106 parce que selon nos connaissances, ces cours ne contenaient pas de travaux d'equipe ou c'était facultatif d'être en équipe
 Data_collabo = subset(Data_collabo, cours !='BOT512')# A changer pour le nom du data.frame de ce fichier relier aux collabos
 Data_collabo = subset(Data_collabo, cours !='ZOO106')
+Data_collabo = subset(Data_collabo, cours !='ECL315')
+Data_collabo = subset(Data_collabo, cours !='ECL608') #celui là n'est pas dans notre db de cours!?
 
 
 ######################################################################################################
@@ -232,7 +236,7 @@ Data_collabo = subset(Data_collabo, cours !='ZOO106')
 # gagnon_joannie, hinse_pierandre, lacroixcarigan_etienne, laporte_simon, lariviere_charlotte = tessierlariviere_chalrotte,
 #  M_leopold, nault_lauriane, rioux_jennyann, avoiecloutier_kellymaude, sthilaire_pascale, trottier_katiacatherine, villeneuve_clara 
 
-Data_collabo[which(str_detect(Data_collabo[,1],'barro')),1]='barro_noura'
+{Data_collabo[which(str_detect(Data_collabo[,1],'barro')),1]='barro_noura'
 Data_collabo[which(str_detect(Data_collabo[,2],'barro')),2]='barro_noura'
 Data_collabo[which(str_detect(Data_collabo[,1],'beaulac')),1]='beaulac_arianne'
 Data_collabo[which(str_detect(Data_collabo[,2],'beaulac')),2]='beaulac_arianne'
@@ -278,11 +282,12 @@ Data_collabo[which(str_detect(Data_collabo[,1],'villleneuve')),1]='villeneuve_cl
 Data_collabo[which(str_detect(Data_collabo[,2],'villleneuve')),2]='villeneuve_clara'
 Data_collabo[which(str_detect(Data_collabo[,1],'malette_marianne')),1]='mallette_marianne'
 Data_collabo[which(str_detect(Data_collabo[,2],'malette_marianne')),2]='mallette_marianne'
-Data_collabo = distinct(Data_collabo) # des nouveaux doublons peuvent s'être ajouté
+Data_collabo = distinct(Data_collabo)} # des nouveaux doublons peuvent s'être ajouté
 
-#Enlever des lignes en surplus (lignes vides) après vérification dans le SQLite
-Data_collabo <- Data_collabo[-c(375,2090),]
+# Enlever des lignes en surplus (lignes vides) après vérification dans le SQLite
+# Data_collabo <- Data_collabo[-c(375,2090),] # à revérifier? je pense que ce n'est pas necessaire
 
+Data_collabo <- subset(Data_collabo,etudiant1!=etudiant2) # Ligne pour retirer les etudiants qui se sont mis ensemble avec eux même
 
 
 ####################################################################################################################
@@ -413,7 +418,7 @@ x <- c(191,131,78,199,62,79,229,83,173,202,203,230,175,176,87,205,
 Data_etudiant <- Data_etudiant[-sort(x), ]
 length(unique(Data_etudiant$nom_prenom))
 length(Data_etudiant$nom_prenom)
-#sort(unique(Data_collabo[,1]))
+
 
 
 
