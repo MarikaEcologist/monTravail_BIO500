@@ -2,10 +2,12 @@
 ###################  STANDARDISATION DES DONNEES    ###############################################################
 ###################################################################################################################
 
-#Changer le directory selon votre ordinateur
-wd <- '/Users/tidelidam/Documents/WD/Raw Data' 
-wd <- "C:/Users/Jo-Han'ny/Documents/Universit?/BIO500 - M?thode comput/donneesBIO500"
-setwd(wd)
+# YO
+################
+
+# wd <- '/Users/tidelidam/Documents/WD/Raw Data' 
+# wd <- "C:/Users/Jo-Han'ny/Documents/Universit?/BIO500 - M?thode comput/donneesBIO500"
+setwd(wd) #Changer le working directory selon votre ordinateur
 
 #install.packages ('stringr')
 library('stringr')
@@ -18,7 +20,6 @@ library('dplyr')
 ###################################################################################################
 ###################   1.1 IMPORTATION   ###########################################################
 ###################################################################################################
-
 
 Data.list.cours = list()
 Data.list.cours[[1]] = read.csv("cours_Ax_Et_Jo_Va.csv", sep=';')
