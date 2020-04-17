@@ -20,7 +20,7 @@ dbWriteTable(con,append=TRUE, name='noms', value=bd_noms,row.name=FALSE)
 bd_cours<-read.csv(file='Data_cours.csv')
 dbWriteTable(con,append=TRUE,name='cours',value=bd_cours,row.name=FALSE)
 
-#################################### Injection des donn?es concernant les collaborations
+#################################### Injection des données concernant les collaborations
 bd_collaborations<-read.csv(file='Data_collabo.csv')
 dbWriteTable(con,append=TRUE,name='collaborations',value=bd_collaborations,row.name=FALSE)
 
@@ -40,19 +40,8 @@ head(resume_collabo)
 # resume_collabo respresente les populations, chaque cours est une population.
 
 
-######################################################################################################
-########################### 1.2 NOMBRE ETUDIANTS PAR COURS POUR CHAQUE COURS  ########################
-######################################################################################################
-
-sql_requete <- "
-SELECT cours, count(DISTINCT etudiant1) AS nb_etudiants 
-FROM collaborations
-GROUP BY cours;"
-resume_cours <- dbGetQuery(con, sql_requete)
-resume_cours <- resume_cours[2:31,]
-
 ##########################################################################################################
-################################ 1.3 CREATION DES POPULATIONS ############################################
+################################ 1.2 CREATION DES POPULATIONS ############################################
 ##########################################################################################################
 
 sql_requete <- "
@@ -342,6 +331,7 @@ for (i in 1:ncol(matrix_collabo)){
         }
 }
 
+#################### VISUALISATION
 BCM113 <- graph.adjacency(matrix_collabo)
 plot(BCM113, layout=layout_nicely, vertex.label.color = 'black',
             edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -372,6 +362,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 BIO109 <- graph.adjacency(matrix_collabo)
 plot(BIO109, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -403,6 +394,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 BIO500 <- graph.adjacency(matrix_collabo)
 plot(BIO500, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -434,6 +426,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 BOT400 <- graph.adjacency(matrix_collabo)
 plot(BOT400, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -464,6 +457,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL308 <- graph.adjacency(matrix_collabo)
 plot(ECL308, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -495,6 +489,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL403 <- graph.adjacency(matrix_collabo)
 plot(ECL403, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -526,6 +521,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL404 <- graph.adjacency(matrix_collabo)
 plot(ECL404, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -557,6 +553,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL406 <- graph.adjacency(matrix_collabo)
 plot(ECL406, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -588,6 +585,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL515 <- graph.adjacency(matrix_collabo)
 plot(ECL515, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -618,6 +616,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL516 <- graph.adjacency(matrix_collabo)
 plot(ECL516, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -648,6 +647,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL527 <- graph.adjacency(matrix_collabo)
 plot(ECL527, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -679,6 +679,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL535 <- graph.adjacency(matrix_collabo)
 plot(ECL535, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -710,6 +711,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL611 <- graph.adjacency(matrix_collabo)
 plot(ECL611, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -741,6 +743,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ENT102 <- graph.adjacency(matrix_collabo)
 plot(ENT102, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -772,6 +775,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 INS154 <- graph.adjacency(matrix_collabo)
 plot(INS154, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -803,6 +807,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 MCB101 <- graph.adjacency(matrix_collabo)
 plot(MCB101, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -834,6 +839,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 TSB303 <- graph.adjacency(matrix_collabo)
 plot(TSB303, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -865,6 +871,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ZOO105 <- graph.adjacency(matrix_collabo)
 plot(ZOO105, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -896,6 +903,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ZOO306 <- graph.adjacency(matrix_collabo)
 plot(ZOO306, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -927,6 +935,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL616 <- graph.adjacency(matrix_collabo)
 plot(ECL616, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -958,6 +967,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL603 <- graph.adjacency(matrix_collabo)
 plot(ECL603, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -989,6 +999,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 GMQ106 <- graph.adjacency(matrix_collabo)
 plot(GMQ106, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -1020,6 +1031,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL534 <- graph.adjacency(matrix_collabo)
 plot(ECL534, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -1051,6 +1063,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 GBI104 <- graph.adjacency(matrix_collabo)
 plot(GBI104, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -1082,6 +1095,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 INS154 <- graph.adjacency(matrix_collabo)
 plot(INS154, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -1113,6 +1127,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ZOO307 <- graph.adjacency(matrix_collabo)
 plot(ZOO307, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -1144,6 +1159,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 BCM104 <- graph.adjacency(matrix_collabo)
 plot(BCM104, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -1175,6 +1191,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL522 <- graph.adjacency(matrix_collabo)
 plot(ECL522, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -1206,6 +1223,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL510 <- graph.adjacency(matrix_collabo)
 plot(ECL510, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -1237,6 +1255,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 CHM319 <- graph.adjacency(matrix_collabo)
 plot(CHM319, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -1268,6 +1287,7 @@ for (i in 1:ncol(matrix_collabo)){
   }
 }
 
+#################### VISUALISATION
 ECL301 <- graph.adjacency(matrix_collabo)
 plot(ECL301, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
@@ -1335,27 +1355,6 @@ dev.off()
 
 #hist(D.mean$D) # pas vraiment distribuée normalement
 summary(lm(Diss.mean$Diss~Diss.mean$nb_etudiants))
-
-            
-            
-            
-            
- 
-            
-
-
-
-#############################################################################################################################        
-#test du début avec ces 2 cours précis
-  #A <- Pop_BIO500
-  #B <- Pop_BCM113
-
-  #c <- nrow(anti_join(A,B))
-  #b <- nrow(anti_join(B,A))
-  #a <- nrow(semi_join(A,B))
-
-  #(Diss.Whittaker <- ((a+b+c)/(((2*a)+b+c)/2))-1)
-
 
 
 
