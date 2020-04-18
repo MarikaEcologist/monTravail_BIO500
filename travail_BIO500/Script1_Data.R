@@ -14,9 +14,6 @@ if (!require("dplyr")) install.packages("dplyr"); library("dplyr")              
 if (!require("plot.matrix")) install.packages("plot.matrix"); library("plot.matrix")  # pour la figure de matrice de dissimilarité
 
 
-#Telechargement des fichiers a partir du lien ownCloud
-download.file("https://doc.ielab.usherbrooke.ca/index.php/s/drhPhGbwRx4SLJi/download?path=%2F&files",
-              destfile='/cloud/project/travail_BIO500/rawdata/donneesBIO500.tar') #seront telecharger dans rawdata
 
 ###################################################################################################
 #######   1. COURS      ###########################################################################
@@ -26,7 +23,7 @@ download.file("https://doc.ielab.usherbrooke.ca/index.php/s/drhPhGbwRx4SLJi/down
 ###################################################################################################
 
 Data.list.cours = list() # Creation de l'objet (une liste vide) qui entreposera les donnees 
-                         # independament en attendant de les mettre en commun.
+        
 {Data.list.cours[[1]] = read.csv("cours_Ax_Et_Jo_Va.csv", sep=';')
 Data.list.cours[[2]] = read.csv("cours_beteille.csv", sep=';')
 Data.list.cours[[3]] = read.csv("cours_gagnon.csv", sep=';')
@@ -52,38 +49,35 @@ Data.list.cours[[7]] = read.csv("cours_Thiffault.csv", sep=';')}
 
 
 for (i in 1:length(Data.list.cours)){
-  print(i) # simplement un compteur
-  str_trim(colnames(Data.list.cours[[i]])) # Retire les espaces avant et après les mots
-  colnames(Data.list.cours[[i]])%>%str_subset("sigle")
-  colnames(Data.list.cours[[i]])[which(str_detect(colnames(Data.list.cours[[i]]),'sigle')==TRUE)] <- 'sigle' #Pour retirer les espaces inutiles lors de la saisi de donnees
+  # Pour s'assurer qu'il n'y a pas d'accent, d'espaces, de charactères superflux.
+  colnames(Data.list.cours[[i]])[str_which(colnames(Data.list.cours[[i]]),"sigle")] <- 'sigle' # si erreur
+  colnames(Data.list.cours[[i]])[str_which(colnames(Data.list.cours[[i]]),"dit")] <- 'credit' #Pour retirer l'accents
+  colnames(Data.list.cours[[i]])[str_which(colnames(Data.list.cours[[i]]),"type")] <- 'type'  #voir ligne pour sigle
+  colnames(Data.list.cours[[i]])[str_which(colnames(Data.list.cours[[i]]),"obl")] <- 'obligatoire'  #Pour les erreurs de frappe
   
-  colnames(Data.list.cours[[i]])[which(str_detect(colnames(Data.list.cours[[i]]),'dit')==TRUE)] <- 'credit' #Pour retirer l'accents
-  colnames(Data.list.cours[[i]])[which(str_detect(colnames(Data.list.cours[[i]]),'type')==TRUE)] <- 'type'  #voir ligne pour sigle
-  colnames(Data.list.cours[[i]])[which(str_detect(colnames(Data.list.cours[[i]]),'obl')==TRUE)] <- 'obligatoire'  #Pour les erreurs de frappe
-  
-  Data.list.cours[[i]] <- data.frame(sigle=Data.list.cours[[i]][,'sigle'],credits=Data.list.cours[[i]][,'credit'],
-                                     type=Data.list.cours[[i]][,'type'],obligatoire=Data.list.cours[[i]][,'obligatoire'])
-  print(colnames(Data.list.cours[[i]]))
+  # Pour uniformiser l'ordre des colonnes
+  Data.list.cours[[i]] <- data.frame(sigle=as.character(Data.list.cours[[i]][,'sigle']),
+                                     credits=as.numeric(Data.list.cours[[i]][,'credit']),
+                                     type=as.character(Data.list.cours[[i]][,'type']),
+                                     obligatoire=as.numeric(Data.list.cours[[i]][,'obligatoire']))
 }
 
-#On enl?ve les rang? avec des NAs???
-Data.list.cours <- lapply(Data.list.cours, na.omit)
 
 #######################################################################################################
 #####################   1.3 Uniformisation du type OBLIGATOIRE   ######################################
 #######################################################################################################
-
+#Certaine personne n'ont pas utiliser des 0 et des 1, mais plutôt des mots comme obl. ou obligatoire
 for (i in 1:7){
   print(i) # un compteur
   Data <- Data.list.cours[[i]]
   Vecteur <- rep(NA,nrow(Data))
-  # Dans le fond je cr?er un output puis je remplace la colonne plus tard
-  Vecteur[which(str_detect(Data$obligatoire, 'obl'))] <- 1
-  Vecteur[which(str_detect(Data$obligatoire, '1'))] <- 1
-  Vecteur[which(str_detect(Data$obligatoire, 'opt'))] <- 0
-  Vecteur[which(str_detect(Data$obligatoire, '0'))] <- 0
-  #Ici je remplace la colonne de charact?res par celle num?rique 
-  Data.list.cours[[i]]$obligatoire <- Vecteur
+  # Dans le fond je cree un output puis je remplace la colonne plus tard
+  Vecteur[str_which(Data$obligatoire, 'obl')] <- 1 
+  Vecteur[str_which(Data$obligatoire, '1')] <- 1
+  Vecteur[str_which(Data$obligatoire, 'opt')] <- 0
+  Vecteur[str_which(Data$obligatoire, '0')] <- 0
+  #Ici je remplace la colonne de characteres par celle numerique 
+  Data.list.cours[[i]]$obligatoire <- as.factor(Vecteur)
 }
 
 
@@ -95,18 +89,18 @@ for (i in 1:7){
   print(i) # un compteur
   Data <- Data.list.cours[[i]]
   Vecteur <- rep(NA,nrow(Data))
-  # Dans le fond je cr?er un output puis je remplace la colonne plus tard
-  Vecteur[which(str_detect(Data$type, 'labo/oral'))] <- 'laboratoire_oral'
-  Vecteur[which(str_detect(Data$type, 'ecrit (oral)'))] <- 'ecrit_oral'
-  Vecteur[which(str_detect(Data$type, 'ecrit/oral'))] <- 'ecrit_oral'
-  Vecteur[which(str_detect(Data$type, 'labo'))] <- 'laboratoire'
-  Vecteur[which(str_detect(Data$type, 'labos'))] <- 'laboratoire'
-  Vecteur[which(str_detect(Data$type, 'crit'))] <- 'ecrit'
-  Vecteur[which(str_detect(Data$type, 'laboratoire'))] <- 'laboratoire'
-  Vecteur[which(str_detect(Data$type, 'terrain'))] <- 'terrain'
-  Vecteur[which(str_detect(Data$type, 'oral'))] <-'oral'
+  # creation d'un output puis je remplace la colonne plus tard
+  Vecteur[str_which(Data$type, 'labo/oral')] <- 'laboratoire_oral'
+  Vecteur[str_which(Data$type, 'ecrit (oral)')] <- 'ecrit_oral'
+  Vecteur[str_which(Data$type, 'ecrit/oral')] <- 'ecrit_oral'
+  Vecteur[str_which(Data$type, 'labo')] <- 'laboratoire'
+  Vecteur[str_which(Data$type, 'labos')] <- 'laboratoire'
+  Vecteur[str_which(Data$type, 'crit')] <- 'ecrit'
+  Vecteur[str_which(Data$type, 'laboratoire')] <- 'laboratoire'
+  Vecteur[str_which(Data$type, 'terrain')] <- 'terrain'
+  Vecteur[str_which(Data$type, 'oral')] <-'oral'
   
-  Data.list.cours[[i]]$type <- Vecteur
+  Data.list.cours[[i]]$type <- as.character(Vecteur)
 }
 
 #######################################################################################################
@@ -124,14 +118,15 @@ Data_cours <- distinct(bind_rows(Data.list.cours))
 #edit(newData) #pour observer les donnees
 #detach(Data_cours)
 
+# les noeuds devant etre uniques, il ne doit y avoir qu'un seul travail par cours
 #Enlever les erreurs de cours et/ou les doublons (9, 47,48,49)
 #Apres verification dans SQLite, enlever les cours BOT512 et ZOO106 (puisqu'ils sont enlever dans les collaborations)
 #Et les cours ECL608 et ISN154 car aucune collaboration 
 Data_cours <- Data_cours[-c(9,12,40,41,46,27,29,43,36,34,39,38, 42, 24, 31, 28, 47:49),]
 rownames(Data_cours) <- c(1:30)
 
-# les noeuds devant Ãªtre uniques, il ne doit y avoir qu'un seul travail par cours
-Sigles = unique(Data_cours[,1])
+# On ordone le data.frame en fonction du nom des cours
+Data_cours <- Data_cours[order(Data_cours$sigle),]
 
 # Faite cette operation jusqu'a ce qu'aucune lignes ne soit renvoyee
 for (i in 1:30){
