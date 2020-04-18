@@ -1,6 +1,6 @@
 #############################################################################################################
 #                                                                                                           #
-#   STANDARDISATION DES DONNEES  BOnjour                                                                           #     
+#   STANDARDISATION DES DONNEES                                                                             #     
 #                                                                                                           # 
 #   par Marika Caouette, Zachary Cloutier, Emma Couture, Joannie Gagnon, Marie Jacques Marianne Mallette    #  
 #                                                                                                           #  
@@ -13,6 +13,10 @@ if (!require("stringr")) install.packages("stringr"); library("stringr") # utili
 if (!require("dplyr")) install.packages("dplyr"); library("dplyr")                    # pour la synthaxe
 if (!require("plot.matrix")) install.packages("plot.matrix"); library("plot.matrix")  # pour la figure de matrice de dissimilarité
 
+
+#Telechargement des fichiers a partir du lien ownCloud
+download.file("https://doc.ielab.usherbrooke.ca/index.php/s/drhPhGbwRx4SLJi/download?path=%2F&files",
+              destfile='/cloud/project/travail_BIO500/rawdata/donneesBIO500.tar') #seront telecharger dans rawdata
 
 ###################################################################################################
 #######   1. COURS      ###########################################################################
