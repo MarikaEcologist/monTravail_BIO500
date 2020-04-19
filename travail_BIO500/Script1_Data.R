@@ -2,7 +2,7 @@
 #                                                                                                           #
 #   STANDARDISATION DES DONNEES                                                                             #     
 #                                                                                                           # 
-#   par Marika Caouette, Zachary Cloutier, Emma Couture, Joannie Gagnon, Marie Jacques Marianne Mallette    #  
+# par Marika Caouette, Zachary Cloutier, Emma Couture, Joannie Gagnon, Marie Jacques et Marianne Mallette   #  
 #                                                                                                           #  
 #############################################################################################################
 
