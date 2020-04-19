@@ -2,9 +2,8 @@
 ############################## INJECTION DONNEES DANS SQLITE #####################################
 ##################################################################################################
 
-if (!require("RSQLite")) install.packages("RSQLite"); library("RSQLite")
-if (!require("knitr")) install.packages("knitr"); library("knitr")
-if (!require("igraph")) install.packages("igraph"); library("igraph")
+if (!require("knitr") install.packages("knitr"); library("knitr")
+if (!require("igraph") install.packages("igraph"); library("igraph")
 
 setwd('/cloud/project/travail_BIO500')
 
