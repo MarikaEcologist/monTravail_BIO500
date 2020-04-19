@@ -2,8 +2,10 @@
 ############################## INJECTION DONNEES DANS SQLITE #####################################
 ##################################################################################################
 
+if (!require("RSQLite")) install.packages("RSQLite"); library("RSQLite")
 if (!require("knitr")) install.packages("knitr"); library("knitr")
 if (!require("igraph")) install.packages("igraph"); library("igraph")
+if (!require("reshape2")) install.packages("reshape2"); library("reshape2")
 
 setwd('/cloud/project/travail_BIO500')
 
@@ -258,7 +260,19 @@ FROM collaborations WHERE cours LIKE '%ECL301%'
 GROUP BY etudiant1, etudiant2 ;"
 Pop_ECL301 <- dbGetQuery(con, sql_requete)    
 head(Pop_ECL301)
-            
+
+######################################################################################################
+########################### 1.3 NOMBRE ETUDIANTS PAR COURS POUR CHAQUE COURS  ########################
+######################################################################################################
+
+sql_requete <- "
+SELECT cours, count(DISTINCT etudiant1) AS nb_etudiants 
+FROM collaborations
+GROUP BY cours;"
+resume_cours <- dbGetQuery(con, sql_requete)
+head(resume_cours)
+
+
 ############################################################################################################
 ########################## 2. VISUALISATION DES RéSEAUX ####################################################
 ############## 2.1 CREATION MATRICE RESEAU COLLABORATION ###################################################
