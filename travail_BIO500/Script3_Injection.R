@@ -1364,31 +1364,29 @@ plot(Matrice.Whittaker,
      ylab="",xlab="", main="Matrice de la dissimilarité entre chaque cours")
             
 
-
 ################################################################################################################
+####################### 4. REGRETION LINEAIRE  #################################################################
+################################################################################################################
+
+
+Diss.mean <- data.frame(Diss=rep(NA,30),cours=Sigles,nb_etudiants = resume_cours$nb_etudiants)
+for (i in 1:30){
+  Diss.mean[i,1] <- mean(Matrice.Whittaker[i,])
+}
+
+plot(Diss.mean$Diss~Diss.mean$nb_etudiants, main='Valeur de dissimilaritée de Whittaker',
+     xlab='Nombre detudiants dans le cours', 
+     ylab= 'Dissimilaritee moyenne par rapport aux autres cours')
+abline(lm(Diss.mean$Diss~Diss.mean$nb_etudiants),col='red')
+with(Diss.mean, text(Diss~nb_etudiants, labels = cours, cex=0.5,pos = 2))
+
+
+
+#hist(D.mean$D) # pas vraiment distribuee normalement
+summary(lm(Diss.mean$Diss~Diss.mean$nb_etudiants))
+
+
 ############################################################################
 dbDisconnect(con)
+
 ####################################### FIN ###########################################
-
-
-# NÉCESSAIRE CE QUI SUIT ?? 
-# Si oui, faut garder la requete des cours (qui été supprimé)
-
-#Diss.mean <- data.frame(Diss=rep(NA,30),cours=Sigles,nb_etudiants = resume_cours$nb_etudiants)
-#for (i in 1:30){
-#  Diss.mean[i,1] <- mean(Matrice.Whittaker[i,])
-#}
-
-#plot(Diss.mean$Diss~Diss.mean$nb_etudiants, main='Valeur de dissimilaritée de Whittaker',
-#     xlab='Nombre d étudiants dans le cours', 
-#     ylab= 'Dissimilaritée moyenne par rapport aux autres cours')
-#abline(lm(Diss.mean$Diss~Diss.mean$nb_etudiants),col='red')
-#with(Diss.mean, text(Diss~nb_etudiants, labels = cours, cex=0.5,pos = 2))
-#dev.off()
-
-#hist(D.mean$D) # pas vraiment distribuée normalement
-#summary(lm(Diss.mean$Diss~Diss.mean$nb_etudiants))
-
-
-
-
