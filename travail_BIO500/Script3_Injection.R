@@ -297,7 +297,8 @@ plot(Colab, vertex.size = 10*degree(Colab)/max(degree(Colab))+3,
      vertex.label= NA, vertex.label.cex = 7, 
      vertex.shape="circle", edge.arrow.size= 0, 
      edge.width= 1, edge.color="grey",
-     layout=layout_nicely, main='Réseau Étudiants')
+     layout=layout_nicely, main='Réseau de collaborations des étudiants 
+     provenant du cours BIO500 - Méthodes en écologie computationnelle')
 
 
 
@@ -334,7 +335,9 @@ BCM113 <- graph.adjacency(matrix_collabo)
 plot(BCM113, layout=layout_nicely, vertex.label.color = 'black',
             edge.arrow.mode = 0, vertex.frame.color = NA, 
             vertex.size = 7, edge.width = 0.2,
-            main='BCM113')
+            main='Réseau de collaborations entre les étudiants
+        de la sous-population du cours BCM113
+     (Biochimie générale - Travaux pratiques)')
 
 ################################################################################################################
 ####################### 2.3.2 POPULATION BIO109 ###############################################################
@@ -397,7 +400,9 @@ BIO500 <- graph.adjacency(matrix_collabo)
 plot(BIO500, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
      vertex.size = 7, edge.width = 0.2,
-     main='BIO500')
+     main='Réseau de collaborations entre les étudiants
+     de la sous-population du cours BIO500
+     (Méthodes en écologie computationnelle)')
 
 ################################################################################################################
 ####################### 2.3.4 POPULATION BOT400 ###############################################################
@@ -556,7 +561,9 @@ ECL406 <- graph.adjacency(matrix_collabo)
 plot(ECL406, layout=layout_nicely, vertex.label.color = 'black', 
      edge.arrow.mode = 0, vertex.frame.color = NA, 
      vertex.size = 7, edge.width = 0.2,
-     main='ECL406')
+     main='Réseau de collaborations entre les étudiants
+     de la sous-population du cours ECL406
+     (Tendances évolutives des plantes terrestres)')
 
 
 ################################################################################################################
