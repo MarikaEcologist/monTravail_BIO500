@@ -1335,8 +1335,13 @@ for (i in 1:30){
 }
 Matrice.Whittaker <- output
 
+
+################################################################################################################
+################################ 3.1 VISUALISATION #############################################################
+################################################################################################################
 install.packages("plot.matrix")
 library(plot.matrix)
+
 par(mar=c(5.1, 4.1, 5.1, 4.1))   # adapt margins
 plot(Matrice.Whittaker,
      digits=2, text.cell=list(cex=0.5),
@@ -1344,33 +1349,32 @@ plot(Matrice.Whittaker,
      axis.row=list(side=2, cex.axis=0.7,las=2),
      ylab="",xlab="", main="Matrice de la dissimilarité entre chaque cours")
             
+
+
 ################################################################################################################
-################################ 3.1 VISUALISATION #############################################################
-################################################################################################################
-
-
-#install.packages('seriation')
-library(seriation)
-dissplot(Matrice.Whittaker, options = list(axes='both'), method='Spectral')
-axis(1)
-
-Diss.mean <- data.frame(Diss=rep(NA,30),cours=Sigles,nb_etudiants = resume_cours$nb_etudiants)
-for (i in 1:30){
-  Diss.mean[i,1] <- mean(Matrice.Whittaker[i,])
-}
-
-plot(Diss.mean$Diss~Diss.mean$nb_etudiants, main='Valeur de dissimilaritée de Whittaker',
-     xlab='Nombre d étudiants dans le cours', 
-     ylab= 'Dissimilaritée moyenne par rapport aux autres cours')
-abline(lm(Diss.mean$Diss~Diss.mean$nb_etudiants),col='red')
-with(Diss.mean, text(Diss~nb_etudiants, labels = cours, cex=0.5,pos = 2))
-dev.off()
-
-#hist(D.mean$D) # pas vraiment distribuée normalement
-summary(lm(Diss.mean$Diss~Diss.mean$nb_etudiants))
-
-
-
 ############################################################################
 dbDisconnect(con)
 ####################################### FIN ###########################################
+
+
+# NÉCESSAIRE CE QUI SUIT ?? 
+# Si oui, faut garder la requete des cours (qui été supprimé)
+
+#Diss.mean <- data.frame(Diss=rep(NA,30),cours=Sigles,nb_etudiants = resume_cours$nb_etudiants)
+#for (i in 1:30){
+#  Diss.mean[i,1] <- mean(Matrice.Whittaker[i,])
+#}
+
+#plot(Diss.mean$Diss~Diss.mean$nb_etudiants, main='Valeur de dissimilaritée de Whittaker',
+#     xlab='Nombre d étudiants dans le cours', 
+#     ylab= 'Dissimilaritée moyenne par rapport aux autres cours')
+#abline(lm(Diss.mean$Diss~Diss.mean$nb_etudiants),col='red')
+#with(Diss.mean, text(Diss~nb_etudiants, labels = cours, cex=0.5,pos = 2))
+#dev.off()
+
+#hist(D.mean$D) # pas vraiment distribuée normalement
+#summary(lm(Diss.mean$Diss~Diss.mean$nb_etudiants))
+
+
+
+
