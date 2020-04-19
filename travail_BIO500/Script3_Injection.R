@@ -2,10 +2,11 @@
 ############################## INJECTION DONNEES DANS SQLITE #####################################
 ##################################################################################################
 
+if (!require("RSQLite")) install.packages("RSQLite"); library("RSQLite")
+if (!require("knitr")) install.packages("knitr"); library("knitr")
+if (!require("igraph")) install.packages("igraph"); library("igraph")
+
 setwd('/cloud/project/travail_BIO500')
-library('RSQLite')
-#install.packages('knitr')
-library('knitr')
 
 #Connection au SQLite si ce n'est pas déjà fait
 con<-dbConnect(SQLite(),dbname="bd_reseau")
