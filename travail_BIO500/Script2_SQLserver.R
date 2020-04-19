@@ -6,8 +6,7 @@
 #wd <- "C:/Users/Jo-Han'ny/Documents/Université/BIO500 - Méthode comput"
 #setwd(wd)
 
-#install.packages('RSQLite')
-library(RSQLite)
+if (!require("RSQLite")) install.packages("RSQLite"); library("RSQLite") #pour la création des tableaux & requetes
 
 con<-dbConnect(SQLite(),dbname="bd_reseau")
 
