@@ -301,7 +301,7 @@ plot(Colab, layout=layout_nicely, vertex.label = NA, edge.arrow.mode = 0,
 
 plot(Colab, vertex.size = 10*degree(Colab)/max(degree(Colab))+3,
      vertex.label= NA, vertex.label.cex = 7,
-     vertex.color = "yellow",
+     vertex.color = "darkred",
      vertex.shape="circle", edge.arrow.size= 0, 
      edge.width= 1, edge.color="grey",
      layout=layout_nicely, main='Réseau de collaborations des étudiants 
@@ -1318,9 +1318,6 @@ plot(ECL301, layout=layout_nicely, vertex.label.color = 'black',
 ## c = nb d'interactions qui sont dans A, mais pas dans B.
 ##  B(M) = [(a+b+c)/((2a+b+c)/2)]-1
 
-library('dplyr')
-library('stringr')
-
 #Faire un vecteur contenant tous le nom des cours pour eviter de devoir les ecrire manuellement
 enviro <- sort(ls())
 enviro.list <- mget(enviro)
@@ -1346,8 +1343,6 @@ Matrice.Whittaker <- output
 ################################################################################################################
 ################################ 3.1 VISUALISATION #############################################################
 ################################################################################################################
-install.packages("plot.matrix")
-library(plot.matrix)
 
 par(mar=c(5.1, 4.1, 5.1, 4.1))   # adapt margins
 plot(Matrice.Whittaker,
