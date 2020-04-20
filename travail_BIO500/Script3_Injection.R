@@ -278,9 +278,6 @@ head(resume_cours)
 ############## 2.1 CREATION MATRICE RESEAU COLLABORATION ###################################################
 ############################################################################################################
 
-#install.packages('tidyr')
-#library(tidyr)
-
 
 #Équilibre la matrice carrée
 resume_collabo2 <- subset(resume_collabo, etudiant2%in%etudiant1)
