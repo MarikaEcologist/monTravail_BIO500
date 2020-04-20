@@ -2,10 +2,6 @@
 ############################### CONNEXION SQL ##################################################
 ################################################################################################
 
-#Changer de répertoire selon où sont les données
-#wd <- "C:/Users/Jo-Han'ny/Documents/Université/BIO500 - Méthode comput"
-#setwd(wd)
-
 if (!require("RSQLite")) install.packages("RSQLite"); library("RSQLite") #pour la création des tableaux & requetes
 
 con<-dbConnect(SQLite(),dbname="bd_reseau")
@@ -38,7 +34,6 @@ FOREIGN KEY (etudiant2) REFERENCES noms(nom_prenom),
 FOREIGN KEY (cours) REFERENCES cours(sigle)
 );"
 
-#Vérifier si on peut faire une clé entre cours (tbl_collaborations) et sigle (tbl_cours)
 dbSendQuery(con, tbl_collaborations)
 
 #Nous avons retirer l'information pour la colonne travail car, il y avait trop de NA
@@ -56,6 +51,7 @@ FOREIGN KEY (sigle) REFERENCES collaborations(cours)
 dbSendQuery(con, tbl_cours)
 
 
+#######################################################################################
 
 dbDisconnect(con)
 
