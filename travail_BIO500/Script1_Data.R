@@ -1,10 +1,10 @@
-#############################################################################################################
-#                                                                                                           #
-#   STANDARDISATION DES DONNEES                                                                             #     
-#                                                                                                           # 
-# par Marika Caouette, Zachary Cloutier, Emma Couture, Joannie Gagnon, Marie Jacques et Marianne Mallette   #  
-#                                                                                                           #  
-#############################################################################################################
+###############################################################################################################
+#                                                                                                             #
+#   STANDARDISATION DES DONNEES                                                                               #     
+#                                                                                                             # 
+#   par Marika Caouette, Zachary Cloutier, Emma Couture, Joannie Gagnon, Marie Jacques et Marianne Mallette   #  
+#                                                                                                             #  
+###############################################################################################################
 
 setwd('/cloud/project/travail_BIO500/rawdata') #Ce repertoire est un rstudiocloud accessible (? à tester)
 
@@ -425,9 +425,6 @@ length(Data_etudiant$nom_prenom)
 ####################################### 4. Enregistrement ######################################################
 ################################################################################################################
 
-#Change de répertoire pour y enregistrer les nouveaux tableaux
-#wd <- "C:/Users/Jo-Han'ny/Documents/Universit?/BIO500 - M?thode comput"
-#setwd(wd)
 
 write.csv(Data_etudiant,'data_etudiant.csv',row.names=FALSE)
 write.csv(Data_collabo, 'Data_collabo.csv',row.names=FALSE)
