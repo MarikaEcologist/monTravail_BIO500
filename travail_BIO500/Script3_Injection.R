@@ -279,11 +279,8 @@ head(resume_cours)
 ############################################################################################################
 
 #install.packages('tidyr')
-library(tidyr)
-#install.packages('reshape2')
-library(reshape2)
-#install.packages("igraph")
-library(igraph)
+#library(tidyr)
+
 
 #Équilibre la matrice carrée
 resume_collabo2 <- subset(resume_collabo, etudiant2%in%etudiant1)
