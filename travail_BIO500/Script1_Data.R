@@ -122,21 +122,32 @@ Data_cours <- distinct(bind_rows(Data.list.cours))
 #Enlever les erreurs de cours et/ou les doublons (9, 47,48,49)
 #Apres verification dans SQLite, enlever les cours BOT512 et ZOO106 (puisqu'ils sont enlever dans les collaborations)
 #Et les cours ECL608 et ISN154 car aucune collaboration 
+Correction_cours <- data.frame(sigle=c('ECL403','ECL406','ECL515','ECL516','ECL527','ECL611','ISN154','ZOO105','ECL616','ECL603','GMQ106','ECL510','ECL522'),
+                                  type=c('ecrit','ecrit','oral','ecrit','oral','ecrit','oral','oral','ecrit','ecrit','ecrit','oral','ecrit'),
+                               credits=c(1,1,2,3,2,1,3,1,3,1,3,3,3),
+                               obligatoire=c(1,1,1,1,1,1,0,1,1,0,0,1,0))
 Data_cours <- Data_cours[-c(9,12,40,41,46,27,29,43,36,34,39,38, 42, 24, 31, 28, 47:49),]
-rownames(Data_cours) <- c(1:30)
-
-# On ordone le data.frame en fonction du nom des cours
-Data_cours <- Data_cours[order(Data_cours$sigle),]
 
 # Faite cette operation jusqu'a ce qu'aucune lignes ne soit renvoyee
 for (i in 1:30){
   output = subset(Data_cours,sigle==Sigles[i])
   if (nrow(output)>1){
     print(output)
+    #Data_cours <- subset(Data_cours,sigle!=Sigles[i])
   }else{
   }
 }
-#Constate qu'aucun cours est en double
+#Data_cours <- rbind(Data_cours,Correction_cours)
+
+
+## On choisi d'enlever BOT512 et ZOO106 parce que selon nos connaissances, ces cours ne contenaient pas de travaux d'equipe ou c'était facultatif d'être en équipe
+Data_cours = subset(Data_cours, sigle !='BOT512')# A changer pour le nom du data.frame de ce fichier relier aux collabos
+Data_cours = subset(Data_cours, sigle !='ZOO106')
+Data_cours = subset(Data_cours, sigle !='ECL315')
+Data_cours = subset(Data_cours, sigle !='ECL608') #celui là n'est pas dans notre db de cours!?
+
+# On ordone le data.frame en fonction du nom des cours
+Data_cours <- Data_cours[order(Data_cours$sigle),]
 
 
 ################################################################################################################
