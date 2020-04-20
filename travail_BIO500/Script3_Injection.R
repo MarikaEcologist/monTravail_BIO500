@@ -303,9 +303,8 @@ plot(Colab, layout=layout_nicely, vertex.label = NA, edge.arrow.mode = 0,
 
 
 plot(Colab, vertex.size = 10*degree(Colab)/max(degree(Colab))+3,
-     vertex.color= as.character(factor(betweenness(Colab), 
-     labels = rev(heat.colors(length(unique(betweenness(Colab))))))),
-     vertex.label= NA, vertex.label.cex = 7, 
+     vertex.label= NA, vertex.label.cex = 7,
+     vertex.color = "yellow",
      vertex.shape="circle", edge.arrow.size= 0, 
      edge.width= 1, edge.color="grey",
      layout=layout_nicely, main='Réseau de collaborations des étudiants 
