@@ -1,0 +1,152 @@
+
+%-------------------Classe document, packages et mise en page-----------------
+\documentclass[12pt]{article}
+
+\usepackage[T1]{fontenc} 
+\usepackage[utf8]{inputenc} 
+\usepackage{natbib} 
+\usepackage[french]{babel}
+    \addto{\captionsfrench}{\renewcommand{\refname}{Bibliographie}} %change nom section Références pour Bibliographie
+\usepackage[labelfont=bf,justification=centering]{caption} %caption figures
+\usepackage[export]{adjustbox} %ajout cadre \includegraphics
+\usepackage{graphicx}
+
+\addtolength{\topmargin}{-0.5in} %réduit espace marge haut,  remonte tout le contenu de la page
+\addtolength{\textheight}{0.7in} %rajoute espace pour le texte, descend le numero de page
+%--------------------------Métadonnées-------------------------------
+\title{\vspace{-2em} \textbf{Comparaison computationnelle\\
+d’un réseau d’interaction d’étudiants\\ à un réseau écologique}}
+\author{Marika Caouette,\\
+    Zachary Cloutier, Emma Couture, \\
+    Joannie Gagnon, Marie Jacques \\
+    et Marianne Mallette}
+\date{24 avril 2020}
+%----------------------------Rédaction-------------------------------
+\DeclareUnicodeCharacter{202F}{\,} %code erreur
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Comparaison computationnelle d’un réseau d’interaction d’étudiants à un réseau écologique via la dissimilarité de Whittaker. Cette étude révèle une corrélation négative entre le nombre d’étudiants dans un cours et la dissimilarité moyenne par rapport aux autres cours.
+\end{abstract}
+
+\section*{Introduction}
+La biodiversité est organisée en fonction de réseaux complexes d’interactions écologiques entre les espèces à l’échelle locale \citep{hagen2012}. Ces réseaux sont composés de noeuds (\textit{nodes}), représentant la composition en espèces, qui sont reliés entre eux par des liens (\textit{edges}), représentant les interactions écologiques \citep{poisot2012}.
+\par\vspace{0.4cm}
+Dans le cadre du cours \textit{BIO500 - Méthodes en écologie computationnelle}, la question suivante a été soulevée:  Est-ce que le réseau de collaborations entre les étudiants du baccalauréat en écologie a les mêmes propriétés que les réseaux écologiques ? Après avoir consulté la littérature à ce sujet et afin de préciser la question, nous avons décidé de nous intéresser au concept de la dissimilarité des réseaux d’interactions entre les espèces et de la mettre en relation avec le nombre d’étudiants par cours.
+\par\vspace{0.4cm}
+En effet, la composition en espèces et les interactions écologiques peuvent se renouveler dans le temps et l’espace, de façon corrélée ou non, ce qui contribue à la présence de dissimilarité dans ce type de réseaux locaux \citep{poisot2012}. De plus, l'occurrence des interactions interspécifiques n’est pas indépendante de la composition spécifique \citep{poisot2012}. Nous avons donc décidé d’appliquer ce concept au réseau de collaboration des étudiants participant au cours, et ce, via l’élaboration computationnelle d’un tableau matriciel et de différentes figures afin de visualiser la complexité du réseau, ses dissimilarités et l’impact du nombre d’étudiants par cours.
+
+\section*{Description de la méthode}
+Chaque étudiant du cours \textit{BIO500} devait compiler tous les travaux faits en équipe durant ses années à l’Université, pour mettre le tout en commun. La compilation se trouve dans 3 fichiers : les collaborations entre étudiants (Data\_collabo), les cours (Data\_cours) et le nom des étudiants (Data\_etudiants).
+\par\vspace{0.4cm}
+Nous avons fait ensuite un nettoyage dans le logiciel R. La fonction \textit{STR\_WHICH} nous a permis d’uniformiser les noms de colonne dans chacune des bases et de corriger les erreurs au niveau des sigles et des noms des étudiants. Avec les fonctions \textit{ORDER} et \textit{EDIT}, nous avons analysé les erreurs possibles dans des données entrées en double dans chaque fichier. Pour Data\_cours, nous avons créé une boucle \textit{FOR} pour s’assurer que chaque cours était unique une fois les erreurs retirées. 
+\par\vspace{0.4cm}
+Ensuite, ce fut la création de trois tables (tbl\_noms, tbl\_collaborations et tbl\_etudiants) et de deux requêtes (sql\_requete) dans la connexion SQLite. La 1ère requête met en relation le nombre de collaborations entre chaque étudiant. La 2ème requête est la création des populations pour chaque cours. La requête a été répliquée pour les 30 cours, donnant 30 populations. 
+\par\vspace{0.4cm}
+Les fonctions \textit{SUBSET} et \textit{\%IN\%} ont été utilisées pour faire une matrice carrée sous la requête des collaborations entre étudiants. Une autre matrice a été créée avec une itération du calcul de dissimilarité pour mettre en relation chaque population. Chaque matrice a été visualisée avec la fonction \textit{GRAPH.ADJACENCY} et \textit{PLOT} du package \textit{plot.matrix} \citep{plot.matrix}. 
+\par\vspace{0.4cm}
+C’est une itération de la combinaison des fonctions \textit{ANTI\_JOIN} et \textit{SEMI\_JOIN} qui nous a permis de calculer le degré de dissimilarité entre les populations. La visualisation de ce degré s’est fait avec la fonction \textit{PLOT}. 
+\par\vspace{0.4cm}
+Finalement, une autre itération des combinaison des fonctions \textit{LM} et \textit{PLOT} nous a permis de montrer une régression linéaire des valeurs de dissimilarité moyenne en fonction du nombre d’étudiants.
+\par\vspace{0.4cm}
+Avant la réalisation des fonctions, les gestionnaires de paquets suivants ont été installés : \textit{plot.matrix} \citep{plot.matrix}, \textit{knitr} \citep{knitr}, \textit{reshape2} \citep{reshape2}, \textit{stringr} \citep{stringr}, \textit{dplyr} \citep{dplyr}, \textit{RSQLite} \citep{SQLite} et \textit{IGraph} \citep{IGraph}. 
+
+\section*{Description des résultats}
+Dans cette section, nous présentons les figures et le tableau permettant de visualiser la complexité du réseau, ses dissimilarités et l’effet du nombre d’étudiants par cours.
+\par\vspace{0.4cm}
+La figure \ref{fig1} illustre le réseau de collaboration des étudiants du cours \textit{BIO500} avec leurs collègues des autres cours, et schématise les valeurs de collaborations par un gradient de taille. Ces valeurs, représentant le nombre d’interactions différentes faites par chaque étudiant, vont de 1 (petit cercle) à 15 (grand cercle).
+\vspace{0.2cm}
+%Figure réseau
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=55ex,height=45ex,fbox]{Figures/Réseau.PNG}
+    \caption{Réseau de collaboration des étudiants ayant en commun le cours \textit{BIO500 - Méthodes en écologie computationnelle}}
+    \label{fig1}
+\end{figure}
+
+Les figures \ref{fig2.1} à \ref{fig2.3} ci-dessous illustrent le réseau de collaboration entre les étudiants des cours \textit{BCM113}, \textit{BIO500} et \textit{ECL406}. Chaque cercle représente un étudiant. Chaque ligne représente un lien entre étudiants.
+
+%Figure cours 1
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=55ex,height=45ex,fbox]{Figures/BCM113.png}
+    \caption{Réseau de collaboration entre les étudiants de la population du cours \textit{BCM113  - Biochimie générale - Travaux pratiques}}
+    \label{fig2.1}
+\end{figure}
+
+%Figure cours 2
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=55ex,height=45ex,fbox]{Figures/BIO500.png}
+    \caption{Réseau de collaboration entre les étudiants de la population du cours \textit{BIO500 - Méthodes en écologie computationnelle}}
+    \label{fig2.2}
+\end{figure}
+
+%Figure cours 3
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=55ex,height=45ex,fbox]{Figures/ECL406.png}
+    \caption{Réseau de collaboration entre les étudiants de la population du cours \textit{ECL406 - Tendances évolutives des plantes terrestres}}
+    \label{fig2.3}
+\end{figure}
+
+\par\vspace{0.6cm}
+Une valeur de dissimilarité a été calculée entre chaque paire de cours. La dissimilarité représente le degré auquel deux cours diffèrent par leur composition en individus ou leurs interactions. Celle-ci est comprise entre 0 (dissimilarité nulle) et 1 (dissimilarité complète). La figure \ref{tab1} (p.6) représente sous forme de matrice 30x30 la distribution de cette valeur pour chaque paire de cours. Les cours comparés avec eux-mêmes ont une dissimilarité nulle, 4 paires de cours ont une dissimilarité moyenne, 62 une dissimilarité élevée, et 804 une dissimilarité très élevée comprise entre ]0.80, 1].
+
+%Matrice
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=20cm,fbox, angle=90]{Figures/Matrice.png}
+    \caption{Matrice de dissimilarité des collaborations entre chacun des cours}
+    \label{tab1}
+\end{figure}
+
+\par\vspace{0.4cm}
+La figure \ref{fig3} (p.7) représente une régression linéaire de la dissimilarité moyenne observée pour un cours par rapport aux autres cours en fonction de son nombre d’étudiants. On observe une faible corrélation négative.
+
+% Régression 
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.75, angle=90]{Figures/Régression.png}
+    \caption{Régression de la dissimilarité moyenne en fonction du nombre d'étudiants dans un cours}
+    \label{fig3}
+\end{figure}
+
+
+\clearpage
+
+\section*{Discussion}
+    \subsection*{Constat des résultats et interprétation}
+        \subsubsection*{Réseaux}
+        Dans la figure \ref{fig1}, il est possible de constater que le réseau est constitué d’individus avec des valeurs de collaborations variées. Les étudiants n’ayant fait que quelques collaborations semblent provenir d’une cohorte ou d’un programme qui diffère des étudiants centraux ayant des collaborations nombreuses dans ce réseau, ce qui explique cette différence dans le nombre d'interactions.
+        \par\vspace{0.4cm}
+        Nous avons décidé d'illustrer les réseaux de collaborations des cours \textit{BCM113}, \textit{BIO500} et \textit{ECL406} car ce sont les cours qui représentent le mieux les étudiants centraux du réseau à travers les cours répertoriés. Ce sont ceux qui démontrent le mieux le comportement d’un large groupe d’étudiants en “population”, et qui restent le plus constant dans le nombre et la variabilité des individus. Ceci nous permet de construire le reste de notre analyse car tous les liens de coopérations sont notamment tirés du groupe d’étudiants de \textit{BIO500}.
+        
+        \subsubsection*{Matrice}
+        Pour interpréter la matrice, prenons par exemple les cours suivant : \textit{ECL308} et \textit{ECL611}. Il est possible de constater que les interactions dans ces cours sont les plus similaires de l’analyse (coefficient de dissimilarité de 0.57). Puisque ce sont des cours offerts dans un cheminement irrégulier, les élèves y sont moins nombreux et sont “communs” aux deux groupes. Cela pourrait expliquer la faible dissimilarité entre ces deux cours, et appuyer notre constat global. 
+        \par\vspace{0.4cm}
+       À l’inverse, on constate que les cours \textit{BIO500} et \textit{BCM113} ont un coefficient de dissimilarité de  0.91, ce qui témoigne d’une grande différence dans les interactions qu’on y retrouve. Cela pourrait être expliqué, entre autre, par le fait que \textit{BCM113} est un cours suivi en début de cheminement alors que \textit{BIO500} est plutôt suivi à la fin du cheminement. Ainsi, les habitudes sociales des étudiants ont pu changer entre temps. 
+\clearpage
+
+        \subsubsection*{Régression linéaire}
+        En ce qui a trait à la question de départ, nous avons décidé de nous intéresser à la relation entre la dissimilarité moyenne des cours (réseaux d’interaction) et le nombre d’étudiants par cours. À partir de la régression linéaire obtenue, on constate une corrélation négative entre le nombre d’étudiants et la dissimilarité. Cela pourrait s’expliquer par le fait que les étudiants ont plus de possibilités de partenaires dans de grands groupes, tandis qu’ils se retrouvent plus restreints dans leur choix dans les petits groupes, au risque de former les mêmes équipes. 
+
+    \subsection*{Comparaison des méthodes avec la littérature}
+    Dans la littérature, on retrouve plusieurs méthodes utilisées pour comparer des réseaux écologiques. Certaines d’entre elles considèrent les ressemblances entre réseaux comme des caractéristiques mathématiques. Elles ont parfois recours à des comparaisons algorithmiques, des analyses multivariées ou de simples analyses statistiques \citep{faust2002, vermaat2009,poisot2011,baiser2011}. Afin de répondre à notre objectif de déterminer la relation dissimilarité/taille des groupes, nous avons eu recours à la méthode de calcul de dissimilarité de Whittaker. Cette dernière considère le nombre d’items, soit dans notre cas, le nombre d’interactions, unique à chacune des populations comparées ainsi que le nombre d’items communs aux deux populations \citep{poisot2012}.
+    
+\section*{Conclusion}
+Les résultats démontrent une haute dissimilarité des réseaux de collaborations entre l’ensemble des cours. Cette dissimilarité semble être due au nombre d’étudiants dans le cours. Il aurait été intéressant de pousser l’analyse en calculant un indice de fidélité pour chaque étudiant participant au cours. Cela permettrait de déterminer si les individus conservent les mêmes liens, donc les mêmes interactions interspécifiques. Nous pourrions poser l’hypothèse qu’un individu infidèle se retrouverait plus au centre du réseau de collaborations, puisqu’il possèderait plus de liens, et que, à l’inverse, un individu fidèle se retrouverait en périphérie du réseau, puisqu'il possèderait moins de liens. Ce serait un beau défi pour les prochains étudiants!
+
+\clearpage
+%---------------------------Références-------------------------------
+
+\nocite{*} %liste sources non citées
+\bibliographystyle{apalike}
+\begin{center}
+\bibliography{Bibliographie} %liste sources citées seulement
+\end{center}
+
+\end{document}
+
