@@ -51,11 +51,11 @@ Data.list.cours[[7]] = read.csv("cours_Thiffault.csv", sep=';')}
 for (i in 1:length(Data.list.cours)){
   # Pour s'assurer qu'il n'y a pas d'accent, d'espaces, de charactères superflux.
   colnames(Data.list.cours[[i]])[str_which(colnames(Data.list.cours[[i]]),"sigle")] <- 'sigle' # si erreur
-  colnames(Data.list.cours[[i]])[str_which(colnames(Data.list.cours[[i]]),"dit")] <- 'credit' #Pour retirer l'accents
-  colnames(Data.list.cours[[i]])[str_which(colnames(Data.list.cours[[i]]),"type")] <- 'type'  #voir ligne pour sigle
+  colnames(Data.list.cours[[i]])[str_which(colnames(Data.list.cours[[i]]),"dit")] <- 'credit' #Pour retirer l'accent
+  colnames(Data.list.cours[[i]])[str_which(colnames(Data.list.cours[[i]]),"type")] <- 'type' 
   colnames(Data.list.cours[[i]])[str_which(colnames(Data.list.cours[[i]]),"obl")] <- 'obligatoire'  #Pour les erreurs de frappe
   
-  # Pour uniformiser l'ordre des colonnes
+  #Pour uniformiser l'ordre des colonnes
   Data.list.cours[[i]] <- data.frame(sigle=as.character(Data.list.cours[[i]][,'sigle']),
                                      credits=as.numeric(Data.list.cours[[i]][,'credit']),
                                      type=as.character(Data.list.cours[[i]][,'type']),
@@ -106,45 +106,47 @@ for (i in 1:7){
 #######################################################################################################
 #####################   1.5 Mise en commun   ##########################################################
 #######################################################################################################
-
+#la fonction distinct permet de ne garder que les ranges qui sont unique et bind_rows permet de créer 
+# UN dataframe avec tous les éléments d'une liste.
 Data_cours <- distinct(bind_rows(Data.list.cours))
 
 ###################################################################################################
 ######################### 1.6 Nettoyage ###########################################################
 ###################################################################################################
 
-#attach(Data_cours)
-#newData <- Data_cours[order(sigle),]
-#edit(newData) #pour observer les donnees
-#detach(Data_cours)
-
 # les noeuds devant etre uniques, il ne doit y avoir qu'un seul travail par cours
-#Enlever les erreurs de cours et/ou les doublons (9, 47,48,49)
-#Apres verification dans SQLite, enlever les cours BOT512 et ZOO106 (puisqu'ils sont enlever dans les collaborations)
-#Et les cours ECL608 et ISN154 car aucune collaboration 
-Correction_cours <- data.frame(sigle=c('ECL403','ECL406','ECL515','ECL516','ECL527','ECL611','ISN154','ZOO105','ECL616','ECL603','GMQ106','ECL510','ECL522'),
-                                  type=c('ecrit','ecrit','oral','ecrit','oral','ecrit','oral','oral','ecrit','ecrit','ecrit','oral','ecrit'),
-                               credits=c(1,1,2,3,2,1,3,1,3,1,3,3,3),
-                               obligatoire=c(1,1,1,1,1,1,0,1,1,0,0,1,0))
-Data_cours <- Data_cours[-c(9,12,40,41,46,27,29,43,36,34,39,38, 42, 24, 31, 28, 47:49),]
+#Enlever les erreurs de cours et/ou les doublons 
+#Apres verification, enlever les cours BOT512 et ZOO106 (puisqu'ils ne sont pas dans les collaborations)
+#Et les cours ECL608 et ISN154 car aucun travail d'équipe n'a été fait dans ces cours.
 
+# Ce petit tableau pourrait vous permettre d'observer les lignes que nous désirons garder :
+#Correction_cours <- data.frame(sigle=c('ECL403','ECL406','ECL515','ECL516','ECL527','ECL611','ISN154','ZOO105','ECL616','ECL603','GMQ106','ECL510','ECL522'),
+                                  #type=c('ecrit','ecrit','oral','ecrit','oral','ecrit','oral','oral','ecrit','ecrit','ecrit','oral','ecrit'),
+                               #credits=c(1,1,2,3,2,1,3,1,3,1,3,3,3),
+                               #obligatoire=c(1,1,1,1,1,1,0,1,1,0,0,1,0))
+# Retrait des lignes problématiques
+Data_cours <- Data_cours[-c(9,12,40,41,46,27,29,43,36,34,39,38, 42, 24, 31, 28, 47:49),]
+#Nous voulons retenir les cours qui sont dans notre table COURS dans un vecteur en ordre alphabetique
+Sigles <- sort(unique(Data_cours$sigle))
+
+#C'est avec cette fonction que nous avons detecter les doublons et choisi ceux que nous voulions garder/enlever
 # Faite cette operation jusqu'a ce qu'aucune lignes ne soit renvoyee
-for (i in 1:30){
-  output = subset(Data_cours,sigle==Sigles[i])
-  if (nrow(output)>1){
-    print(output)
-    #Data_cours <- subset(Data_cours,sigle!=Sigles[i])
-  }else{
-  }
-}
+# for (i in 1:30){
+   #output = subset(Data_cours,sigle==Sigles[i])
+   #if (nrow(output)>1){
+     #print(output)
+      #Data_cours <- subset(Data_cours,sigle!=Sigles[i])
+  # }else{
+  #}
+ #}
 #Data_cours <- rbind(Data_cours,Correction_cours)
 
 
 ## On choisi d'enlever BOT512 et ZOO106 parce que selon nos connaissances, ces cours ne contenaient pas de travaux d'equipe ou c'était facultatif d'être en équipe
-Data_cours = subset(Data_cours, sigle !='BOT512')# A changer pour le nom du data.frame de ce fichier relier aux collabos
-Data_cours = subset(Data_cours, sigle !='ZOO106')
-Data_cours = subset(Data_cours, sigle !='ECL315')
-Data_cours = subset(Data_cours, sigle !='ECL608') #celui là n'est pas dans notre db de cours!?
+# Data_cours = subset(Data_cours, sigle !='BOT512')# A changer pour le nom du data.frame de ce fichier relier aux collabos
+# Data_cours = subset(Data_cours, sigle !='ZOO106')
+# Data_cours = subset(Data_cours, sigle !='ECL315')
+# Data_cours = subset(Data_cours, sigle !='ECL608') #celui là n'est pas dans notre db de cours!?
 
 # On ordone le data.frame en fonction du nom des cours
 Data_cours <- Data_cours[order(Data_cours$sigle),]
@@ -178,19 +180,19 @@ Data.list.collabo[[7]] <- read.csv("collaborations_Thiffault.csv" , sep=';',file
 # 4 colonnes sont necessaires dans ce DB: cours, etudiant1, etudiant2 et date
 for (i in 1:length(Data.list.collabo)){
   print(i) # simplement un compteur
-  colnames(Data.list.collabo[[i]])[which(str_detect(colnames(Data.list.collabo[[i]]),'cours')==TRUE)] <- 'cours'
+  colnames(Data.list.collabo[[i]])[str_which(colnames(Data.list.collabo[[i]]),'cours')] <- 'cours'
   
-  colnames(Data.list.collabo[[i]])[which(str_detect(colnames(Data.list.collabo[[i]]),'date')==TRUE)] <- 'date'
-  colnames(Data.list.collabo[[i]])[which(str_detect(colnames(Data.list.collabo[[i]]),'annee')==TRUE)] <- 'date'
+  colnames(Data.list.collabo[[i]])[str_which(colnames(Data.list.collabo[[i]]),'date')] <- 'date'
+  colnames(Data.list.collabo[[i]])[str_which(colnames(Data.list.collabo[[i]]),'annee')] <- 'date'
   
-  etudiant <- colnames(Data.list.collabo[[i]])[which(str_detect(colnames(Data.list.collabo[[i]]),'udiant')==TRUE)]
+  etudiant <- colnames(Data.list.collabo[[i]])[str_which(colnames(Data.list.collabo[[i]]),'udiant')]
   
   # Certaine manip furent necessaire car il y avait des coquilles dans le début des colonne 'etudiant' 
   # Ici on vérifie si la colonne etudiant1 se trouve en premier dans les colonne vis à vis d'etudiant2
   if(str_sub(etudiant[1],-9) < str_sub(etudiant[2],-9)){ # Parfois les noms de colonnes commençaient par de drôle de symboles
-    colnames(Data.list.collabo[[i]])[which(str_detect(colnames(Data.list.collabo[[i]]),'udiant')==TRUE)] <- c('etudiant1','etudiant2')
+    colnames(Data.list.collabo[[i]])[str_which(colnames(Data.list.collabo[[i]]),'udiant')] <- c('etudiant1','etudiant2')
   }else{
-    colnames(Data.list.collabo[[i]])[which(str_detect(colnames(Data.list.collabo[[i]]),'udiant')==TRUE)] <- c('etudiant2','etudiant1')
+    colnames(Data.list.collabo[[i]])[str_which(colnames(Data.list.collabo[[i]]),'udiant')] <- c('etudiant2','etudiant1')
   }
   Data.list.collabo[[i]] <- data.frame(etudiant1=Data.list.collabo[[i]][,'etudiant1'],etudiant2=Data.list.collabo[[i]][,'etudiant2'],
                                        cours=Data.list.collabo[[i]][,'cours'],date=Data.list.collabo[[i]][,'date'])
@@ -209,23 +211,23 @@ Data_collabo = distinct(bind_rows(Data.list.collabo))
 ######################################################################################################
 
 # À faire jusqu'à ce que plus rien ne soit afficher
-for (i in 1:nrow(Data_collabo)){
-  if ((Data_collabo[,3]%in%Sigles)[i]==FALSE){ # Nous donne tous les sigles qui ne sont pas présent dans notre table cours
-    print(Data_collabo[i,3])
-    print(i)
-  }
-}
+#for (i in 1:nrow(Data_collabo)){
+  #if ((Data_collabo[,3]%in%Sigles)[i]==FALSE){ # Nous donne tous les sigles qui ne sont pas présent dans notre table cours
+    #print(Data_collabo[i,3])
+    #print(i) #un compteur
+  #}
+#}
 
-Data_collabo[which(str_detect(Data_collabo[,3], 'TSB300')),3] = 'TSB303'
-Data_collabo[which(str_detect(Data_collabo[,3], 'ECL603\n')),3] = 'ECL603'
-Data_collabo[which(str_detect(Data_collabo[,3], 'ELC527')),3] = 'ECL527'
-Data_collabo[which(str_detect(Data_collabo[,3], 'ZOO105\n')),3] = 'ZOO105'
-Data_collabo[which(str_detect(Data_collabo[,3], 'ZOO106\n')),3] = 'ZOO106'
-Data_collabo[which(str_detect(Data_collabo[,3], 'ZOO307\n')),3] = 'ZOO307'
-Data_collabo[which(str_detect(Data_collabo[,3], 'ECL 527')),3] = 'ECL527'
-Data_collabo[which(str_detect(Data_collabo[,3], 'BOT 400')),3] = 'BOT400'
+Data_collabo[str_which(Data_collabo[,3], 'TSB300'),3] = 'TSB303'
+Data_collabo[str_which(Data_collabo[,3], 'ECL603\n'),3] = 'ECL603'
+Data_collabo[str_which(Data_collabo[,3], 'ELC527'),3] = 'ECL527'
+Data_collabo[str_which(Data_collabo[,3], 'ZOO105\n'),3] = 'ZOO105'
+Data_collabo[str_which(Data_collabo[,3], 'ZOO106\n'),3] = 'ZOO106'
+Data_collabo[str_which(Data_collabo[,3], 'ZOO307\n'),3] = 'ZOO307'
+Data_collabo[str_which(Data_collabo[,3], 'ECL 527'),3] = 'ECL527'
+Data_collabo[str_which(Data_collabo[,3], 'BOT 400'),3] = 'BOT400'
 
-Data_collabo = Data_collabo[1:2393,] # ? revoir la raison
+Data_collabo = Data_collabo[1:2393,] # la fin contient de NAs
 
 ## On choisi d'enlever BOT512 et ZOO106 parce que selon nos connaissances, ces cours ne contenaient pas de travaux d'equipe ou c'était facultatif d'être en équipe
 Data_collabo = subset(Data_collabo, cours !='BOT512')# A changer pour le nom du data.frame de ce fichier relier aux collabos
@@ -346,6 +348,8 @@ for (i in 1:length(index_erreur)){
 
 Data_collabo= distinct(Data_collabo)
 
+# On ordone le data.frame en fonction du nom des cours
+Data_collabo <- Data_cours[order(Data_collabo$cours),]
 
 ###################################################################################################
 ###############   3.ETUDIANT      #################################################################
@@ -384,12 +388,12 @@ Data.list.etudiant[[7]] <- read.csv("etudiants_Thiffault.csv", sep=';',fileEncod
 
 for (i in 1:length(Data.list.etudiant)){
   print(i) # simplement un compteur
-  colnames(Data.list.etudiant[[i]])[which(str_detect(colnames(Data.list.etudiant[[i]]),'nom')==TRUE)] <- 'nom_prenom'
-  colnames(Data.list.etudiant[[i]])[which(str_detect(colnames(Data.list.etudiant[[i]]),'ann')==TRUE)] <- 'annee.debut'
-  colnames(Data.list.etudiant[[i]])[which(str_detect(colnames(Data.list.etudiant[[i]]),'session')==TRUE)] <- 'session'
-  colnames(Data.list.etudiant[[i]])[which(str_detect(colnames(Data.list.etudiant[[i]]),'prog')==TRUE)] <- 'programme'
-  colnames(Data.list.etudiant[[i]])[which(str_detect(colnames(Data.list.etudiant[[i]]),'regime')==TRUE)] <- 'coop'
-  colnames(Data.list.etudiant[[i]])[which(str_detect(colnames(Data.list.etudiant[[i]]),'coop')==TRUE)] <- 'coop'
+  colnames(Data.list.etudiant[[i]])[str_which(colnames(Data.list.etudiant[[i]]),'nom')] <- 'nom_prenom'
+  colnames(Data.list.etudiant[[i]])[str_which(colnames(Data.list.etudiant[[i]]),'ann')] <- 'annee.debut'
+  colnames(Data.list.etudiant[[i]])[str_which(colnames(Data.list.etudiant[[i]]),'session')] <- 'session'
+  colnames(Data.list.etudiant[[i]])[str_which(colnames(Data.list.etudiant[[i]]),'prog')] <- 'programme'
+  colnames(Data.list.etudiant[[i]])[str_which(colnames(Data.list.etudiant[[i]]),'regime')] <- 'coop'
+  colnames(Data.list.etudiant[[i]])[str_which(colnames(Data.list.etudiant[[i]]),'coop')] <- 'coop'
   
   Data.list.etudiant[[i]] <- data.frame(nom_prenom=Data.list.etudiant[[i]][,'nom_prenom'],annee_debut=Data.list.etudiant[[i]][,'annee.debut'],
                                         session_debut=Data.list.etudiant[[i]][,'session'],programme=Data.list.etudiant[[i]][,'programme'],coop=Data.list.etudiant[[i]][,'coop'])
@@ -425,11 +429,12 @@ x <- c(191,131,78,199,62,79,229,83,173,202,203,230,175,176,87,205,
        68,165,140,213,214,159,31,216,185,32,195,168,219,116,70,
        41,125,43,112,126,46,223,122,198,224,166,71,236)
 
-Data_etudiant <- Data_etudiant[-sort(x), ]
+Data_etudiant <- Data_etudiant[-x, ]
 length(unique(Data_etudiant$nom_prenom))
 length(Data_etudiant$nom_prenom)
 
-
+# On ordone le data.frame en fonction du nom des etudiants
+Data_etudiant <- Data_cours[order(Data_etudiant$nom_prenom),]
 
 
 ################################################################################################################
