@@ -7,7 +7,7 @@ if (!require("knitr")) install.packages("knitr"); library("knitr")
 if (!require("igraph")) install.packages("igraph"); library("igraph")
 if (!require("reshape2")) install.packages("reshape2"); library("reshape2")
 
-setwd('/cloud/project/travail_BIO500')
+# setwd('/cloud/project/travail_BIO500')
 
 #Connection au SQLite si ce n'est pas déjà fait
 con<-dbConnect(SQLite(),dbname="bd_reseau")
@@ -294,7 +294,7 @@ L <- acast(resume_collabo3, etudiant1~etudiant2, value.var='nb_collaborations')
 
 
 Colab <- graph.adjacency(L)
-Colab <- simplify(Colab, remove.multiple = FALSE, remove.loops = TRUE)
+Colab <- simplify(Colab, remove.multiple = FALSE, remove.loops = TRUE) #enlever les loops entre 1 seul etudiant
 plot(Colab, layout=layout_nicely, vertex.label = NA, edge.arrow.mode = 0, 
             vertex.frame.color = NA, vertex.size = 7, edge.width = 0.2)
 
@@ -314,7 +314,6 @@ plot(Colab, vertex.size = 10*degree(Colab)/max(degree(Colab))+3,
 ####################### 2.3.1 POPULATION BCM113 ##################################################################
 ##################################################################################################################
 
-class(bd_collaborations$cours)
 bd_collaborations$cours <- as.character(bd_collaborations$cours)            
 
 etudiantstotaux <- unique(c(as.character(Pop_BCM113$etudiant1),as.character(Pop_BCM113$etudiant2)))
@@ -1319,21 +1318,20 @@ plot(ECL301, layout=layout_nicely, vertex.label.color = 'black',
 ##  B(M) = [(a+b+c)/((2a+b+c)/2)]-1
 
 #Faire un vecteur contenant tous le nom des cours pour eviter de devoir les ecrire manuellement
-enviro <- sort(ls())
-enviro.list <- mget(enviro)
-Pop.cours <- enviro.list[which(str_detect(names(enviro.list),'Pop_')==TRUE)]
-Sigles <- sort(as.character(unique(bd_cours[,1])))
+enviro <- sort(ls()) #nous donne le nom des objets dans l'environnement en character
+enviro.list <- mget(enviro) #nous donne les objets de 'enviro' dans une liste
+Pop.cours <- enviro.list[str_which(names(enviro.list),'Pop_')] #on ne veut garder que ceux commençant par Pop_, pour trouver toutes les populations
+Sigles <- sort(as.character(unique(bd_cours[,1]))) # tous les noms des cours à comparer en character et dans l'ordre c'est important!
 
 output <- matrix(nrow=length(Sigles), ncol=length(Sigles),dimnames=list(Sigles, Sigles))
-for (i in 1:30){
+for (i in 1:30){ #Pour chaque cours une colonne
   A <- Pop.cours[[i]]
-  for (j in 1:30){
+  for (j in 1:30){ #remplis avec une comparaison avec chaque autre cours (Matrice de dissimilarité)
     B <- Pop.cours[[j]]
-    c <- nrow(anti_join(A,B))
-    b <- nrow(anti_join(B,A))
-    a <- nrow(semi_join(A,B))
-    Diss.Whittaker <- ((a+b+c)/(((2*a)+b+c)/2))-1
-    print(Diss.Whittaker)
+    c <- nrow(anti_join(A,B)) # ne sont que dans A
+    b <- nrow(anti_join(B,A)) # ne sont que dans B
+    a <- nrow(semi_join(A,B)) # sont dans les 2
+    Diss.Whittaker <- ((a+b+c)/(((2*a)+b+c)/2))-1 # Calcul pris dans Poisot 2012
     output[j,i] <- Diss.Whittaker
   }
 }
@@ -1344,7 +1342,8 @@ Matrice.Whittaker <- output
 ################################ 3.1 VISUALISATION #############################################################
 ################################################################################################################
 
-par(mar=c(5.1, 4.1, 5.1, 4.1))   # adapt margins
+#Cette partie du code est fait avec le package plot.matrix
+par(mar=c(5.1, 4.1, 5.1, 4.1))   # adapter les marges
 plot(Matrice.Whittaker,
      digits=2, text.cell=list(cex=0.5),
      axis.col=list(side=1, cex.axis=0.7,las=2),
@@ -1357,8 +1356,9 @@ plot(Matrice.Whittaker,
 ################################################################################################################
 
 
-Diss.mean <- data.frame(Diss=rep(NA,30),cours=Sigles,nb_etudiants = resume_cours$nb_etudiants)
-for (i in 1:30){
+Diss.mean <- data.frame(Diss=rep(NA,30),cours=resume_cours$cours,nb_etudiants = resume_cours$nb_etudiants)
+
+for (i in 1:nrow(resume_cours)){
   Diss.mean[i,1] <- mean(Matrice.Whittaker[i,])
 }
 
