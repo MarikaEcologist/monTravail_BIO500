@@ -149,4 +149,3 @@ Les résultats démontrent une haute dissimilarité des réseaux de collaboratio
 \end{center}
 
 \end{document}
-
